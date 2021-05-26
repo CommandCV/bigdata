@@ -1,5 +1,0 @@
-flink
-scala
-spark
-hadoop
-hive
