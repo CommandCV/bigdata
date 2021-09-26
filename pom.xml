@@ -9,13 +9,13 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>SparkModule</module>
-        <module>ScalaModule</module>
-        <module>HbaseModule</module>
-        <module>KafkaModule</module>
-        <module>HadoopModule</module>
-        <module>StormModule</module>
-        <module>FlinkModule</module>
+        <module>spark</module>
+        <module>scala</module>
+        <module>hbase</module>
+        <module>kafka</module>
+        <module>hadoop</module>
+        <module>storm</module>
+        <module>flink</module>
     </modules>
 
 
