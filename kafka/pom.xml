@@ -11,14 +11,6 @@
 
     <artifactId>kafka</artifactId>
 
-    <!--集中管理依赖jar包版本-->
-    <properties>
-        <zookeeper.version>3.4.10</zookeeper.version>
-        <kafka.version>0.10.2.0</kafka.version>
-        <log4j.version>1.2.17</log4j.version>
-    </properties>
-
-
     <dependencies>
         <!--添加kafka依赖-->
         <dependency>

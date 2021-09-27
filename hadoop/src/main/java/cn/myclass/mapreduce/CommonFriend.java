@@ -82,9 +82,9 @@ public class CommonFriend {
 
     public static void main(String[] args) {
         boolean flag;
-        String inputPath = "HadoopModule/src/main/resources/file/friend.txt";
-        String firstOutputPath = "HadoopModule/src/main/resources/file/first_result.txt";
-        String secondOutputPath = "HadoopModule/src/main/resources/file/common_friend.txt";
+        String inputPath = "hadoop/src/main/resources/file/friend.txt";
+        String firstOutputPath = "hadoop/src/main/resources/file/first_result.txt";
+        String secondOutputPath = "hadoop/src/main/resources/file/common_friend.txt";
         // 运行任务
         flag = JobUtil.runJob(new Configuration(),
                 CommonFriend.class,

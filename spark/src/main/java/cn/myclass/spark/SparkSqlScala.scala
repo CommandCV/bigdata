@@ -25,7 +25,7 @@ object SparkSqlScala {
                 .appName("sparkSql_java")
                 .config("spark.master", "local")
                 .getOrCreate
-        var df = sparkSession.read.json("SparkModule/src/main/resources/file/json.dat")
+        var df = sparkSession.read.json("spark/src/main/resources/file/json.dat")
         //创建临时视图,并起名为customer
         df.createOrReplaceTempView("customer")
         //使用sql语句查询
@@ -101,7 +101,7 @@ object SparkSqlScala {
         sql("use spark")
         sql("show tables").show()
         //sql("create table if not exists test1(id int, name string, age int) using hive")
-        //sql("LOAD DATA LOCAL INPATH 'SparkModule/src/main/resources/file/data1_ALS.tags' INTO TABLE test1")
+        //sql("LOAD DATA LOCAL INPATH 'spark/src/main/resources/file/data1_ALS.tags' INTO TABLE test1")
         sql("SELECT * FROM test1").show()
     }
 

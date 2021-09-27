@@ -38,7 +38,7 @@ public class SparkSql_Java {
                 .config("spark.master","local")
                 .getOrCreate();
         //从json文件中读取数据
-        Dataset<Row> df = sparkSession.read().json("SparkModule/SparkModule/src/main/resources/file/json.dat");
+        Dataset<Row> df = sparkSession.read().json("spark/src/main/resources/file/json.dat");
         //创建临时视图,并起名为customer
         df.createOrReplaceTempView("customer");
         //使用sql语句查询
@@ -60,7 +60,7 @@ public class SparkSql_Java {
                 .config("spark.master","local")
                 .getOrCreate();
         //从json文件中读取数据
-        Dataset<Row> df = sparkSession.read().json("SparkModule/SparkModule/src/main/resources/file/json.dat");
+        Dataset<Row> df = sparkSession.read().json("spark/src/main/resources/file/json.dat");
         //创建临时视图,并起名为customer
         df.createOrReplaceTempView("customer");
         //使用sql语句查询
@@ -161,7 +161,7 @@ public class SparkSql_Java {
         hiveSession.sql("use spark");
         hiveSession.sql("show tables").show();
         //hiveSession.sql("create table if not exists test1(id int, name string, age int) using hive");
-        //hiveSession.sql("LOAD DATA LOCAL INPATH 'SparkModule/src/main/resources/file/data.tags' INTO TABLE test1");
+        //hiveSession.sql("LOAD DATA LOCAL INPATH 'spark/src/main/resources/file/data.tags' INTO TABLE test1");
         hiveSession.sql("SELECT * FROM test1").show();
     }
 

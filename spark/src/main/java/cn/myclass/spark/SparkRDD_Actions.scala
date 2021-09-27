@@ -21,7 +21,7 @@ object SparkRDD_Actions {
       */
     def RDD_getData(): Unit ={
         //获得文件
-        val rdd1 = sc.textFile("SparkModule/target/classes/file/word")
+        val rdd1 = sc.textFile("spark/target/classes/file/word")
         //获取第一条数据,类似于take(),但是注意first直接返回元素而take返回的是数组
         println("------first()-------")
         println(rdd1.first())
@@ -45,14 +45,14 @@ object SparkRDD_Actions {
       * saveAsSequenceFile(),将结果以序列化文件保存
       */
     def RDD_saveData(): Unit ={
-        val rdd1 = sc.textFile("SparkModule/target/classes/file/word")
+        val rdd1 = sc.textFile("spark/target/classes/file/word")
         val rdd2 = rdd1.flatMap(line => line.split("\t"))
         val rdd3 = rdd2.map((_, 1))
         val rdd4 = rdd3.reduceByKey(_ + _, 2)   //设置reduce任务分区数为2
         //将结果以文本文件的形式保存到本地
-        rdd4.saveAsTextFile("E:\\IDEAProject\\BigDataMaven\\SparkModule\\src\\main\\resources\\file\\out")
+        rdd4.saveAsTextFile("spark/src/main/resources/file/out")
         //将结果以序列化文件的形式保存到本地
-        //rdd4.saveAsSequenceFile("E:\\IDEAProject\\BigDataMaven\SparkModule\\src\\main\\resources\\file")
+        //rdd4.saveAsSequenceFile("spark/src/main/resources/file")
     }
 
     /**
@@ -60,7 +60,7 @@ object SparkRDD_Actions {
       * countByKey(),简化了按键累加的操作
       */
     def RDD_countByKey(): Unit ={
-        val rdd1 = sc.textFile("SparkModule/target/classes/file/word")
+        val rdd1 = sc.textFile("spark/target/classes/file/word")
         val rdd2 = rdd1.flatMap(line => line.split("\t"))
         val rdd3 = rdd2.map((_, 1))
         // 按键统计，将相同key的值进行累加

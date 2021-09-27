@@ -23,7 +23,7 @@ object SparkMLlib {
     // 创建Spark上下文
     private val sparkContext = sparkSession.sparkContext
     // 存放数据的目录
-    private val dir = "SparkModule/src/main/resources/file/winequality-white.csv"
+    private val dir = "spark/src/main/resources/file/winequality-white.csv"
     // 创建样例类
     private case class Wine(FixedAcidity: Double,   // 固定酸度
                     VolatileAcidity: Double,        // 挥发性酸度
@@ -62,9 +62,9 @@ object SparkMLlib {
         // 通过线性回归训练，生成模型
         val model = line.fit(dataFrame)
         // 加载已有的模型则不需要训练，直接使用数据测试即可
-        // val model = LinearRegression.load("SparkModule/src/main/resources/file/model")
+        // val model = LinearRegression.load("spark/src/main/resources/file/model")
         // 保存模型
-        model.save("SparkModule/src/main/resources/file/model")
+        model.save("spark/src/main/resources/file/model")
 
         // 创建测试数据
         val testData = sparkSession.createDataFrame(Seq((6.0, Vectors.dense(7, 0.27, 0.36, 20.7, 0.045, 45, 170, 1.001, 3, 0.45, 8.8)),
@@ -167,7 +167,7 @@ object SparkMLlib {
       */
     def sparkMLlibALSMeanSquaredError(): Unit ={
         // 加载数据
-        val data = sparkContext.textFile("SparkModule/src/main/resources/file/data1_ALS.tags")
+        val data = sparkContext.textFile("spark/src/main/resources/file/data1_ALS.tags")
         // 将数据变换成样例类Rating
         val ratings = data.map(_.split(',') match { case Array(user, item, rate) =>
             Rating(user.toInt, item.toInt, rate.toDouble)
@@ -210,7 +210,7 @@ object SparkMLlib {
       */
     def sparkMLlibALSRecommendGoods(): Unit ={
         // 加载数据
-        val data = sparkContext.textFile("SparkModule/src/main/resources/file/data2_recommed.tags")
+        val data = sparkContext.textFile("spark/src/main/resources/file/data2_recommed.tags")
         // 将数据变化为样例类
         val ratings = data.map(_.split(',') match { case Array(user, item, rate) =>
             Rating(user.toInt, item.toInt, rate.toDouble)
@@ -245,7 +245,7 @@ object SparkMLlib {
       */
     def sparkMLlibALSRecommendMovies(): Unit ={
         // 转换DataFrame对象
-        val ratings = sparkContext.textFile("SparkModule/src/main/resources/file/data3_movies.tags")
+        val ratings = sparkContext.textFile("spark/src/main/resources/file/data3_movies.tags")
         // 将每一行的数据进行切分并转化为样例类
         val ratings0 = ratings.map(str =>{
             val fields = str.split("::")

@@ -2,7 +2,7 @@ package cn.myclass.stream;
 
 import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.common.functions.FoldFunction;
+//import org.apache.flink.api.common.functions.FoldFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -141,27 +141,27 @@ public class DataStreamWindowFunction {
         ENV.execute("Aggregate Function");
     }
 
-    /**
-     * 窗口折叠方法
-     * 统计单词出现的次数，折叠方法不适用于会话窗口以及可合并窗口，这里只是为了演示练习，已过时。
-     */
-    private static void foldFunction() throws Exception {
-        data.flatMap(new MyFlatMapFunction())
-                .keyBy(0)
-                // 设置时间窗口的大小为3秒
-                .timeWindow(Time.seconds(3))
-                // 窗口滚动方法，第一个参数为滚动的默认值
-                .fold(new Tuple2<String, Integer>("", 0), new FoldFunction<Tuple2<String, Integer>, Tuple2<String, Integer>>() {
-
-                    @Override
-                    public Tuple2<String, Integer> fold(Tuple2<String, Integer> tuple1, Tuple2<String, Integer> tuple2) throws Exception {
-                        // 将键设置为第二个元组的键(因为最初的第一个键为默认值空字符串)，值相加
-                        return new Tuple2<>(tuple2.f0, tuple1.f1 + tuple2.f1);
-                    }
-                }).print();
-
-        ENV.execute("Fold Function");
-    }
+//    /**
+//     * 窗口折叠方法
+//     * 统计单词出现的次数，折叠方法不适用于会话窗口以及可合并窗口，这里只是为了演示练习，已过时。 version 1.9.0  1.12已移除
+//     */
+//    private static void foldFunction() throws Exception {
+//        data.flatMap(new MyFlatMapFunction())
+//                .keyBy(0)
+//                // 设置时间窗口的大小为3秒
+//                .timeWindow(Time.seconds(3))
+//                // 窗口滚动方法，第一个参数为滚动的默认值
+//                .fold(new Tuple2<String, Integer>("", 0), new FoldFunction<Tuple2<String, Integer>, Tuple2<String, Integer>>() {
+//
+//                    @Override
+//                    public Tuple2<String, Integer> fold(Tuple2<String, Integer> tuple1, Tuple2<String, Integer> tuple2) throws Exception {
+//                        // 将键设置为第二个元组的键(因为最初的第一个键为默认值空字符串)，值相加
+//                        return new Tuple2<>(tuple2.f0, tuple1.f1 + tuple2.f1);
+//                    }
+//                }).print();
+//
+//        ENV.execute("Fold Function");
+//    }
     
     /**
      * 窗口加工方法
@@ -244,36 +244,36 @@ public class DataStreamWindowFunction {
         ENV.execute("Incremental Window Aggregation with AggregateFunction");
     }
 
-    /**
-     * 具有增量聚合的窗口折叠方法
-     * 与增量聚合的窗口归纳方法类似，只是实现部分为折叠方法而非归纳方法，已过时
-     */
-    private static void incrementalWindowAggregationWithFoldFunction() throws Exception {
-        data.flatMap(new MyFlatMapFunction())
-                // 选取键，由于下方使用的是process function，这里用的是元组，所以必须通过KeySelector指定键
-                .keyBy(t -> t.f0)
-                // 设置时间窗口的大小为5秒
-                .timeWindow(Time.seconds(5))
-                .fold(new Tuple2<>("", 0), new FoldFunction<Tuple2<String, Integer>, Tuple2<String, Integer>>() {
-
-                    @Override
-                    public Tuple2<String, Integer> fold(Tuple2<String, Integer> tuple1, Tuple2<String, Integer> tuple2) throws Exception {
-                        // 将键设置为第二个元组的键(因为最初的第一个键为默认值空字符串)，值相加
-                        return new Tuple2<>(tuple2.f0, tuple1.f1 + tuple2.f1);
-                    }
-                }, new MyProcessWindowFunction()).print();
-
-        ENV.execute("Incremental Window Aggregation with FoldFunction");
-    }
+//    /**
+//     * 具有增量聚合的窗口折叠方法
+//     * 与增量聚合的窗口归纳方法类似，只是实现部分为折叠方法而非归纳方法，已过时 version 1.9.0  1.12已移除
+//     */
+//    private static void incrementalWindowAggregationWithFoldFunction() throws Exception {
+//        data.flatMap(new MyFlatMapFunction())
+//                // 选取键，由于下方使用的是process function，这里用的是元组，所以必须通过KeySelector指定键
+//                .keyBy(t -> t.f0)
+//                // 设置时间窗口的大小为5秒
+//                .timeWindow(Time.seconds(5))
+//                .fold(new Tuple2<>("", 0), new FoldFunction<Tuple2<String, Integer>, Tuple2<String, Integer>>() {
+//
+//                    @Override
+//                    public Tuple2<String, Integer> fold(Tuple2<String, Integer> tuple1, Tuple2<String, Integer> tuple2) throws Exception {
+//                        // 将键设置为第二个元组的键(因为最初的第一个键为默认值空字符串)，值相加
+//                        return new Tuple2<>(tuple2.f0, tuple1.f1 + tuple2.f1);
+//                    }
+//                }, new MyProcessWindowFunction()).print();
+//
+//        ENV.execute("Incremental Window Aggregation with FoldFunction");
+//    }
 
     public static void main(String[] args) throws Exception {
         reduceFunction();
         aggregateFunction();
-        foldFunction();
+//        foldFunction();
         processWindowFunction();
         incrementalWindowAggregationWithReduceFunction();
         incrementalWindowAggregationWithAggregateFunction();
-        incrementalWindowAggregationWithFoldFunction();
+//        incrementalWindowAggregationWithFoldFunction();
 
     }
 }

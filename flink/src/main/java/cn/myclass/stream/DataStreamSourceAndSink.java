@@ -39,7 +39,7 @@ public class DataStreamSourceAndSink {
      */
     public static void readTextFile() throws Exception {
         // 从本地文本文件中读取数据
-        DataStreamSource<String> dataStream = env.readTextFile("FlinkModule/src/main/resources/common/word");
+        DataStreamSource<String> dataStream = env.readTextFile("flink/src/main/resources/common/word");
         // 从hdfs文件系统中读取数据
         //DataStreamSource<String> dataStream = env.readTextFile("hdfs://master:9000/word");
 
@@ -108,13 +108,13 @@ public class DataStreamSourceAndSink {
      */
     public static void writeAsText() throws Exception {
         // 从本地文本文件中读取数据
-        DataStream<String> dataStream = env.readTextFile("FlinkModule/src/main/resources/common/word");
+        DataStream<String> dataStream = env.readTextFile("flink/src/main/resources/common/word");
         // 设置并行度为1，将结果写入到一个文件中
         env.setParallelism(1);
         // 将结果写入到hdfs中
         //dataStream.writeAsText("hdfs://master:9000/words.txt");
         // 将结果写到本地文本文件中
-        dataStream.writeAsText("FlinkModule/src/main/resources/stream/words.txt");
+        dataStream.writeAsText("flink/src/main/resources/stream/words.txt");
         // 执行任务
         env.execute();
     }
@@ -125,7 +125,7 @@ public class DataStreamSourceAndSink {
      */
     public static void writeAsCsv() throws Exception {
         // 从本地文本文件中读取数据
-        DataStream<String> dataStream = env.readTextFile("FlinkModule/src/main/resources/common/word");
+        DataStream<String> dataStream = env.readTextFile("flink/src/main/resources/common/word");
         // 设置并行度
         env.setParallelism(1);
         // 将单词转化成元组
@@ -137,7 +137,7 @@ public class DataStreamSourceAndSink {
                     collector.collect(new Tuple2<>(word, 1));
                 }
             }
-        }).writeAsCsv("FlinkModule/src/main/resources/stream/words.csv");
+        }).writeAsCsv("flink/src/main/resources/stream/words.csv");
         // 执行任务
         env.execute();
     }
@@ -147,7 +147,7 @@ public class DataStreamSourceAndSink {
      */
     public static void writeToSocket() throws Exception {
         // 从本地文本文件中读取数据
-        DataStream<String> dataStream = env.readTextFile("FlinkModule/src/main/resources/common/word");
+        DataStream<String> dataStream = env.readTextFile("flink/src/main/resources/common/word");
         // 将结果写入到socket套接字中，以简单字符串类型发送
         dataStream.writeToSocket("localhost", 9999, new SimpleStringSchema());
         // 执行任务
@@ -159,7 +159,7 @@ public class DataStreamSourceAndSink {
      */
     public static void addSink() throws Exception {
         // 从本地文本文件中读取数据
-        DataStream<String> dataStream = env.readTextFile("FlinkModule/src/main/resources/common/word");
+        DataStream<String> dataStream = env.readTextFile("flink/src/main/resources/common/word");
         // 将单词形成元组并初始化次数为1
         dataStream.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
                     @Override

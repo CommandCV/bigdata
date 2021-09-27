@@ -56,7 +56,7 @@ public class Problem2 {
         //删除output路径，防止存在
         HadoopFileSystem.deleteDir("/wordcount/output");
         //上传测试文件
-        HadoopFileSystem.putFile("HadoopModule/target/classes/file/number.tags","/wordcount/input/number.tags");
+        HadoopFileSystem.putFile("hadoop/target/classes/file/number.tags","/wordcount/input/number.tags");
         System.out.println("------------------------文件内容---------------------");
         HadoopFileSystem.catFile("/wordcount/input/number.tags");
         System.out.println("------------------------文件内容---------------------");

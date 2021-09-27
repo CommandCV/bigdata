@@ -11,12 +11,6 @@
 
     <artifactId>hadoop</artifactId>
 
-    <!--集中管理依赖jar包版本-->
-    <properties>
-        <hadoop.version>2.7.3</hadoop.version>
-        <log4j.version>1.2.17</log4j.version>
-    </properties>
-
     <dependencies>
         <!--添加hadoop依赖-->
         <dependency>

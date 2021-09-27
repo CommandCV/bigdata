@@ -17,7 +17,7 @@ public class FileSystemConnector {
         // 创建流处理执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         // 从文本文件中数据并切分打散
-        DataStream<String> data = env.readTextFile("FlinkModule/src/main/resources/stream/word")
+        DataStream<String> data = env.readTextFile("flink/src/main/resources/stream/word")
                 .flatMap(new FlatMapFunction<String, String>() {
                     @Override
                     public void flatMap(String s, Collector<String> collector) throws Exception {

@@ -64,21 +64,21 @@ object DataStreamTransformation {
         env.execute("keyBy and reduce")
     }
 
-    /**
-      * 滚动折叠，将相同的键的值进行滚动，形成新的值
-      */
-    def fold(): Unit ={
-        val word = env.socketTextStream("localhost",9999)
-        val result = word.flatMap(_.split(" ")).filter(_.nonEmpty).map((_,1)).keyBy(0)
-                // 传入初始值
-                .fold(0)((foldKey, key) => {
-                    // 将传入的值与之前折叠的值进行累加形成新的值
-                    println(key._1+":"+ (key._2 + foldKey))
-                    key._2 + foldKey
-                })
-        result.print().setParallelism(1)
-        env.execute("fold")
-    }
+//    /**
+//      * 滚动折叠，将相同的键的值进行滚动，形成新的值 version 1.9.0  1.12已移除
+//      */
+//    def fold(): Unit ={
+//        val word = env.socketTextStream("localhost",9999)
+//        val result = word.flatMap(_.split(" ")).filter(_.nonEmpty).map((_,1)).keyBy(0)
+//                // 传入初始值
+//                .fold(0)((foldKey, key) => {
+//                    // 将传入的值与之前折叠的值进行累加形成新的值
+//                    println(key._1+":"+ (key._2 + foldKey))
+//                    key._2 + foldKey
+//                })
+//        result.print().setParallelism(1)
+//        env.execute("fold")
+//    }
 
     /**
       * 滚动聚合操作，按照元组索引或字段统计出该键的总和，最小值，最大值
@@ -86,7 +86,7 @@ object DataStreamTransformation {
       */
     def aggregation(): Unit ={
         // 以流的形式读取文件中的数字
-        val number = env.readTextFile("FlinkModule/src/main/resources/file/text")
+        val number = env.readTextFile("flink/src/main/resources/file/text")
         //val text = env.socketTextStream("localhost",9999)
         // 通过Map形成元组
         val tuple = number.filter(_.nonEmpty).map(w=>{
@@ -160,12 +160,12 @@ object DataStreamTransformation {
       * 连接两条保留原来类型的数据流,允许两条流之间共享状态 -- 不知道有啥用
       */
     def connect(): Unit ={
-        val stream1 = env.readTextFile("FlinkModule/src/main/resources/file/text")
+        val stream1 = env.readTextFile("flink/src/main/resources/file/text")
         /*val r1 = stream1.filter(_.nonEmpty).map(w => {
             val arr = w.split(" ")
             (arr(0), arr(1))
         })*/
-        val stream2 = env.readTextFile("FlinkModule/src/main/resources/file/word1")
+        val stream2 = env.readTextFile("flink/src/main/resources/file/word1")
        /* val r2 = stream2.flatMap(_.split(" ")).filter(_.nonEmpty).map((_,1))*/
 
         val connectStream = stream1.connect(stream2)
@@ -178,14 +178,14 @@ object DataStreamTransformation {
       */
     def union(): Unit ={
         // 创建第一条流
-        val stream1 = env.readTextFile("FlinkModule/src/main/resources/file/text")
+        val stream1 = env.readTextFile("flink/src/main/resources/file/text")
         // 将第一条流进行处理，形成元组
         val r1 = stream1.filter(_.nonEmpty).map(w => {
             val arr = w.split(" ")
             (arr(0), arr(1).toInt)
         })
         // 创建第二条流
-        val stream2 = env.readTextFile("FlinkModule/src/main/resources/file/word1")
+        val stream2 = env.readTextFile("flink/src/main/resources/file/word1")
         // 将第二条流进行处理，形成元组
         val r2 = stream2.flatMap(_.split(" ")).filter(_.nonEmpty).map((_,1))
 
@@ -195,33 +195,33 @@ object DataStreamTransformation {
         env.execute("union")
     }
 
-    /**
-      * 切分数据流并通过select选择流
-      */
-    def splitAndSelect(): Unit ={
-        val number = env.readTextFile("FlinkModule/src/main/resources/file/number")
-        val splitStream = number.flatMap(_.split(" ") filter(_.nonEmpty)).map(_.toInt)
-                .split((num:Int) => num % 2 match{
-                    case 0 => List("even")
-                    case 1 => List("odd")
-                })
-        // 选择其中一条流
-        val evenStream = splitStream select "even"
-        val oddStream = splitStream select "odd"
-        // 使用.select的方式选择流可以选择多个
-        //val all = splitStream.select("even","odd")
-
-        evenStream.print("even").setParallelism(1)
-        oddStream.print("odd").setParallelism(1)
-        env.execute("split and select")
-    }
+//    /**
+//      * 切分数据流并通过select选择流  version 1.9.0  1.12已移除
+//      */
+//    def splitAndSelect(): Unit ={
+//        val number = env.readTextFile("flink/src/main/resources/file/number")
+//        val splitStream = number.flatMap(_.split(" ") filter(_.nonEmpty)).map(_.toInt)
+//                .split((num:Int) => num % 2 match{
+//                    case 0 => List("even")
+//                    case 1 => List("odd")
+//                })
+//        // 选择其中一条流
+//        val evenStream = splitStream select "even"
+//        val oddStream = splitStream select "odd"
+//        // 使用.select的方式选择流可以选择多个
+//        //val all = splitStream.select("even","odd")
+//
+//        evenStream.print("even").setParallelism(1)
+//        oddStream.print("odd").setParallelism(1)
+//        env.execute("split and select")
+//    }
 
     /**
       * 累加器,在并行任务中计数
       */
     def accumulator(): Unit ={
         // 读取单词
-        val word = env.readTextFile("FlinkModule/src/main/resources/file/word")
+        val word = env.readTextFile("flink/src/main/resources/file/word")
         // 将单词进行处理并用累加器累加
         word.flatMap(_.split("\t") filter(_.nonEmpty)).map(
             new RichMapFunction[String,String] {
@@ -259,7 +259,7 @@ object DataStreamTransformation {
       */
     def distributeCache(): Unit ={
         // 注册文件，类型可以是本地文件或者hdfs文件,名字叫word
-        env.registerCachedFile("FlinkModule/src/main/resources/file/word","word")
+        env.registerCachedFile("flink/src/main/resources/file/word","word")
         val word = env.fromElements("haha","hello")
         // 使用RichMapFunction函数获得分布式缓存文件
         word.map(new RichMapFunction[String,String] {

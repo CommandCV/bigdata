@@ -131,6 +131,6 @@ public class HadoopFileSystem {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         setFileSystem("hdfs://hadoop:9000");
-        putFile("HadoopModule/src/main/resources/file/air_data.txt", "hdfs://hadoop:9000/air/air_data.txt");
+        putFile("hadoop/src/main/resources/file/air_data.txt", "hdfs://hadoop:9000/air/air_data.txt");
     }
 }

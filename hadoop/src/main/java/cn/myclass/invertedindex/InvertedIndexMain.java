@@ -12,9 +12,9 @@ import org.apache.hadoop.io.Text;
 public class InvertedIndexMain {
     public static void main(String[] args) {
 
-        String inputPath = "HadoopModule/src/main/resources/invert_index/text/";
-        String firstOutput = "HadoopModule/src/main/resources/invert_index/result_first";
-        String secondOutput = "HadoopModule/src/main/resources/invert_index/result_second";
+        String inputPath = "hadoop/src/main/resources/invert_index/text/";
+        String firstOutput = "hadoop/src/main/resources/invert_index/result_first";
+        String secondOutput = "hadoop/src/main/resources/invert_index/result_second";
 
         if (JobUtil.runJob(new Configuration(), InvertedIndexMain.class,
                 InvertedIndexFirstMapper.class, InvertedIndexFirstReducer.class,

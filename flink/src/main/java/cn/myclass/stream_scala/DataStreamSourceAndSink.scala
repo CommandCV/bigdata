@@ -31,7 +31,7 @@ object DataStreamSourceAndSink {
       */
     def readTextFile(): Unit ={
         // 从文本中读取数据按照制表符切分并过滤空数据
-        val word = env.readTextFile("FlinkModule/src/main/resources/file/word")
+        val word = env.readTextFile("flink/src/main/resources/file/word")
                 .flatMap( _.split("\t") filter(_.nonEmpty))
         word.print()
     }
@@ -75,26 +75,26 @@ object DataStreamSourceAndSink {
       * 保存为文本文件
       */
     def writeAsText(): Unit ={
-        val data = env.readTextFile("FlinkModule/src/main/resources/file/text")
+        val data = env.readTextFile("flink/src/main/resources/file/text")
         val result = data.map(w =>{
             val arr = w.split(" ")
             // 形成元组
             (arr(0), arr(1).toInt)
         })
-        result.writeAsText("FlinkModule/src/main/resources/file/writeAsText.txt").setParallelism(1)
+        result.writeAsText("flink/src/main/resources/file/writeAsText.txt").setParallelism(1)
     }
 
     /**
       * 保存为csv文件
      */
     def writeAsCsv(): Unit ={
-        val data = env.readTextFile("FlinkModule/src/main/resources/file/text")
+        val data = env.readTextFile("flink/src/main/resources/file/text")
         val result = data.map(w =>{
             val arr = w.split(" ")
             // 形成元组
             (arr(0), arr(1).toInt)
         })
-        result.writeAsCsv("FlinkModule/src/main/resources/file/writeAsCsv.csv").setParallelism(1)
+        result.writeAsCsv("flink/src/main/resources/file/writeAsCsv.csv").setParallelism(1)
     }
 
     /**
@@ -110,7 +110,7 @@ object DataStreamSourceAndSink {
       * 自定义输出
       */
     def customDataSink(): Unit ={
-        val data = env.readTextFile("FlinkModule/src/main/resources/file/text")
+        val data = env.readTextFile("flink/src/main/resources/file/text")
         val result = data.map(w =>{
             val arr = w.split(" ")
             // 形成元组

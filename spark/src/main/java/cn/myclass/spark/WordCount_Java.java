@@ -26,7 +26,7 @@ public class WordCount_Java {
         //jar包形式运行
         JavaRDD<String> rdd1 = sc.textFile(args[0]);
         //本地运行
-        //JavaRDD<String> rdd1 = sc.textFile("SparkModule/target/classes/file/word");
+        //JavaRDD<String> rdd1 = sc.textFile("spark/target/classes/file/word");
         //切分数据
         JavaRDD<String> rdd2 = rdd1.flatMap(new FlatMapFunction<String, String>() {
             @Override

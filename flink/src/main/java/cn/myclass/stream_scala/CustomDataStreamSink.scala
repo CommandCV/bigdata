@@ -12,7 +12,7 @@ class CustomDataStreamSink extends RichSinkFunction[(String,Int)]{
       * @param value 一条数据
       * @param context 上下文
       */
-    override def invoke(value: (String, Int), context: SinkFunction.Context[_]): Unit ={
+    override def invoke(value: (String, Int), context: SinkFunction.Context): Unit ={
         println(value)
     }
 }

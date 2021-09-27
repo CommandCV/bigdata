@@ -32,7 +32,7 @@ public class DataSetSourceAndSink {
      * 从文本文件中读取数据按照制表符切分并输出。
      */
     public static void readTextFile() throws Exception {
-        DataSource<String> words = env.readTextFile("FlinkModule/src/main/resources/common/word");
+        DataSource<String> words = env.readTextFile("flink/src/main/resources/common/word");
         // 将单词按照制表符切分并收集
         words.flatMap(new FlatMapFunction<String, String>() {
 
@@ -51,7 +51,7 @@ public class DataSetSourceAndSink {
      * 此方法和readTextFile方法类似，只不过是制定了数据类型。
      */
     public static void readTextFileWithValue() throws Exception {
-        DataSource<StringValue> words = env.readTextFileWithValue("FlinkModule/src/main/resources/common/word");
+        DataSource<StringValue> words = env.readTextFileWithValue("flink/src/main/resources/common/word");
         words.flatMap(new FlatMapFunction<StringValue, String>() {
 
             @Override
@@ -68,7 +68,7 @@ public class DataSetSourceAndSink {
      * 从Csv文件中读取数据。
      */
     public static void readCsvFile() throws Exception {
-        env.readCsvFile("FlinkModule/src/main/resources/common/wordcount.csv")
+        env.readCsvFile("flink/src/main/resources/common/wordcount.csv")
                 // 指定每个字段的类型
                 .types(String.class, Integer.class)
                 .print();
@@ -130,7 +130,7 @@ public class DataSetSourceAndSink {
      */
     public static void writeAsText() throws Exception {
         env.fromElements("flink", "scala", "spark", "hadoop", "hive")
-                .writeAsText("FlinkModule/src/main/resources/common/text_result.txt");
+                .writeAsText("flink/src/main/resources/common/text_result.txt");
         // 注意：由于懒加载机制所以需要执行execute方法
         env.execute();
     }
@@ -140,7 +140,7 @@ public class DataSetSourceAndSink {
      */
     public static void writeAsFormattedText() throws Exception {
         env.fromElements("flink", "scala", "spark", "hadoop", "hive")
-                .writeAsFormattedText("FlinkModule/src/main/resources/common/text_formatted_result.txt", new TextOutputFormat.TextFormatter<String>() {
+                .writeAsFormattedText("flink/src/main/resources/common/text_formatted_result.txt", new TextOutputFormat.TextFormatter<String>() {
                     @Override
                     public String format(String s) {
                         return s + "," + 1;
@@ -160,7 +160,7 @@ public class DataSetSourceAndSink {
                         return new Tuple2<>(s,1);
                     }
                 })
-                .writeAsCsv("FlinkModule/src/main/resources/common/csv_result.csv");
+                .writeAsCsv("flink/src/main/resources/common/csv_result.csv");
         env.execute();
     }
 

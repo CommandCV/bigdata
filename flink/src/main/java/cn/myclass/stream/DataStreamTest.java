@@ -17,7 +17,7 @@ public class DataStreamTest {
 
         DataStream<String> dataStream = env
                 // 读取文本文件中的单词
-                .readTextFile("FlinkModule/src/main/resources/stream/word")
+                .readTextFile("flink/src/main/resources/stream/word")
                 // 切分单词并形成元组
                 .flatMap(new FlatMapFunction<String, String>() {
                     @Override

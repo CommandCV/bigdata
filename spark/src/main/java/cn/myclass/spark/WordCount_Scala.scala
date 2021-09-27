@@ -20,7 +20,7 @@ object WordCount_Scala {
         //jar包运行
         val rdd1 = sc.textFile(args(0))
         //本地文件运行
-        //val rdd1 = sc.textFile("SparkModule/target/classes/file/word")
+        //val rdd1 = sc.textFile("spark/target/classes/file/word")
         //切割
         val rdd2 = rdd1.flatMap(line => line.split("\t"))
         //形成对偶

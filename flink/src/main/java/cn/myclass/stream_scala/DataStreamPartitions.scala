@@ -20,7 +20,7 @@ object DataStreamPartitions {
     /**
       * 获取数据
       */
-    val text:DataStream[String] = env.readTextFile("FlinkModule/src/main/resources/stream/word")
+    val text:DataStream[String] = env.readTextFile("flink/src/main/resources/stream/word")
 
     /**
       * 随机分配，随机将数据分发至每个区中

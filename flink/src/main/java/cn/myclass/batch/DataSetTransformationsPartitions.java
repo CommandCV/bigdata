@@ -20,12 +20,12 @@ public class DataSetTransformationsPartitions {
     /**
      * 文本数据集
      */
-    private static DataSet<String> text = env.readTextFile("FlinkModule/src/main/resources/batch/text");
+    private static DataSet<String> text = env.readTextFile("flink/src/main/resources/batch/text");
 
     /**
      * 单词数据集
      */
-    private static DataSet<String> word = env.readTextFile("FlinkModule/src/main/resources/common/word");
+    private static DataSet<String> word = env.readTextFile("flink/src/main/resources/common/word");
 
     /**
      * 以类的形式实现flatMap方法，提高复用性

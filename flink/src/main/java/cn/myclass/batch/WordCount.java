@@ -15,7 +15,7 @@ public class WordCount {
         // 获得执行环境
         final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
         // 从文件中读取数据
-        DataSet<String> text = env.readTextFile("FlinkModule/src/main/resources/common/word");
+        DataSet<String> text = env.readTextFile("flink/src/main/resources/common/word");
         // 将单词切分并初始化次数为1
         DataSet<Tuple2<String, Integer>> wordCounts = text
                 .flatMap(new FlatMapFunction<String, Tuple2<String,Integer>>() {

@@ -5,8 +5,10 @@ import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.table.api.*;
-import org.apache.flink.table.api.java.*;
+import org.apache.flink.table.api.EnvironmentSettings;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.util.Collector;
 
 /**
@@ -15,16 +17,30 @@ import org.apache.flink.util.Collector;
  */
 public class TableSqlApi {
 
+
     /**
-     * 获得执行环境
+     * 环境配置
+     */
+    private static EnvironmentSettings settings = EnvironmentSettings.newInstance().build();
+
+    /**
+     * 获得流执行环境
      */
     private static ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
     /**
-     * 获得表的执行环境
+     * 获得流式表的执行环境
+     * @return org.apache.flink.table.api.TableEnvironment
+     */
+    private static TableEnvironment getStreamTableEnvironment(){
+        return TableEnvironment.create(settings);
+    }
+
+    /**
+     * 获得批式表的执行环境
      * @return org.apache.flink.table.api.java.BatchTableEnvironment
      */
-    private static BatchTableEnvironment getTableEnvironment(){
+    private static BatchTableEnvironment getBatchTableEnvironment(){
         return BatchTableEnvironment.create(env);
     }
 
@@ -34,7 +50,7 @@ public class TableSqlApi {
      */
     private static void registerWordCount(BatchTableEnvironment tableEnv){
         // 加载数据
-        DataSet<String> text = env.readTextFile("FlinkModule/src/main/resources/table/word");
+        DataSet<String> text = env.readTextFile("flink/src/main/resources/common/word");
         // 将数据进行切分
         DataSet<String> word = text.flatMap(new FlatMapFunction<String, String>() {
             @Override
@@ -61,13 +77,13 @@ public class TableSqlApi {
      */
     private static void wordCountTableApi() throws Exception {
         // 获得表环境
-        BatchTableEnvironment tableEnv = getTableEnvironment();
+        BatchTableEnvironment tableEnv = getBatchTableEnvironment();
         // 注册表
         registerWordCount(tableEnv);
         // 扫描表获得表对象并按照单词排序
         Table table = tableEnv.scan("wordcount").orderBy("word");
         // 转化成对应类型的数据集
-        DataSet data = tableEnv.toDataSet(table,WordCount.class);
+        DataSet<WordCount> data = tableEnv.toDataSet(table,WordCount.class);
         // 输出
         data.print();
 
@@ -78,13 +94,13 @@ public class TableSqlApi {
      */
     private static void wordCountTableSql() throws Exception {
         // 获得表环境
-        BatchTableEnvironment tableEnv = getTableEnvironment();
+        BatchTableEnvironment tableEnv = getBatchTableEnvironment();
         // 注册表
         registerWordCount(tableEnv);
         // 执行自定义sql，扫描表获得表对象并按照单词排序
         Table sqlTable = tableEnv.sqlQuery("select * from wordcount order by word");
         // 转化成对应类型的数据集
-        DataSet sqlData = tableEnv.toDataSet(sqlTable,WordCount.class);
+        DataSet<WordCount> sqlData = tableEnv.toDataSet(sqlTable, WordCount.class);
         // 输出
         sqlData.print();
     }

@@ -13,7 +13,7 @@ object TagGenerator {
         //import sqlContext.implicits._
 
         // 加载评论文件
-        val poi_tags = sparkContext.textFile("SparkModule/src/main/resources/file/temptags.tags")
+        val poi_tags = sparkContext.textFile("spark/src/main/resources/file/temptags.tags")
         // 将每一行的文件按照制表符切割
         val poi_taglist = poi_tags.map(e=>e.split("\t"))
                // 过滤不符合长度的数据
@@ -38,7 +38,7 @@ object TagGenerator {
                 .map(e=> e._1-> e._2.sortBy(_._2).reverse.take(10).map(a=> a._1+":"+a._2.toString).mkString(","))
 
         // 添加制表符分隔并保存文件，两个分区
-        poi_taglist.map(e=>e._1+"\t"+e._2).saveAsTextFile("SparkModule/src/main/resources/file/tags")
+        poi_taglist.map(e=>e._1+"\t"+e._2).saveAsTextFile("spark/src/main/resources/file/tags")
 
         }
 }

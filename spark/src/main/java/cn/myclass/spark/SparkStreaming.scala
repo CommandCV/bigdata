@@ -11,10 +11,10 @@ object SparkStreaming {
             //.setMaster("spark://master:7077")
             .setAppName("SparkStreamingWordCount")
     //通过SparkStreaming工厂的方式使用检查点重构或新建SparkStreaming上下文，批次间隔为 2 秒
-    private val sparkStreamingContext = StreamingContext.getOrCreate("SparkModule/src/main/resources/checkpoint",
+    private val sparkStreamingContext = StreamingContext.getOrCreate("spark/src/main/resources/checkpoint",
                     ()=>{
                     val sparkStreamingContext = new StreamingContext(conf, Seconds(2))
-                    sparkStreamingContext.checkpoint("SparkModule/src/main/resources/checkpoint")
+                    sparkStreamingContext.checkpoint("spark/src/main/resources/checkpoint")
                     sparkStreamingContext
                 })
 
@@ -52,7 +52,7 @@ object SparkStreaming {
         // 将单词形成元组
         val rdd2 = rdd1.map(word => (word, 1))
         // 设置保存点
-        sparkStreamingContext.checkpoint("SparkModule/src/main/resources/checkpoint")
+        sparkStreamingContext.checkpoint("spark/src/main/resources/checkpoint")
         // 更新状态
         val rdd3 = rdd2.updateStateByKey[Int]((newValues: Seq[Int], runningCount: Option[Int]) => {
             // 获得新值

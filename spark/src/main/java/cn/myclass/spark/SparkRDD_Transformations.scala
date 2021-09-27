@@ -22,7 +22,7 @@ object SparkRDD_Transformations {
       */
     def runByLocal(): Unit ={
         //本地文件运行
-        val rdd1 = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd1 = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd2 = rdd1.flatMap(line => line.split("\t"))
         //map阶段，形成对偶
@@ -42,7 +42,7 @@ object SparkRDD_Transformations {
       */
     def RDD_mapPartitions(): Unit ={
         //本地文件运行
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd1 = rdd.flatMap(line => line.split("\t"))
         //分区变换
@@ -73,7 +73,7 @@ object SparkRDD_Transformations {
       */
     def RDD_filter(): Unit ={
         //本地文件运行，并发度为2
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd1 = rdd.flatMap(line => line.split("\t"))
         //过滤操作
@@ -93,7 +93,7 @@ object SparkRDD_Transformations {
       */
     def RDD_union(): Unit ={
         //本地文件运行
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd1 = rdd.flatMap(line => line.split("\t"))
         //过滤所有包含字母h和w的单词
@@ -111,7 +111,7 @@ object SparkRDD_Transformations {
       */
     def RDD_intersection(): Unit ={
         //本地文件运行
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd1 = rdd.flatMap(line => line.split("\t"))
         //过滤所有包含字母h和w的单词
@@ -130,7 +130,7 @@ object SparkRDD_Transformations {
       */
     def RDD_subtract(): Unit ={
         //本地文件运行
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd1 = rdd.flatMap(line => line.split("\t"))
         //过滤所有包含字母h和w的单词
@@ -149,7 +149,7 @@ object SparkRDD_Transformations {
       */
     def RDD_distinct(): Unit ={
         //本地文件运行
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd1 = rdd.flatMap(line => line.split("\t"))
         //去重
@@ -166,7 +166,7 @@ object SparkRDD_Transformations {
       */
     def RDD_groupByKey(): Unit ={
         //本地文件运行
-        val rdd1 = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd1 = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd2 = rdd1.flatMap(line => line.split("\t"))
         //map阶段，形成对偶
@@ -191,7 +191,7 @@ object SparkRDD_Transformations {
       */
     def RDD_aggregateByKey(): Unit ={
         //本地文件运行
-        val rdd1 = sc.textFile("SparkModule/target/classes/file/grade.tags", 2)   //设置并发度为2
+        val rdd1 = sc.textFile("spark/target/classes/file/grade.tags", 2)   //设置并发度为2
         //map阶段，形成对偶
         val rdd2 = rdd1.map(line=>{
             val arr = line.split(" ")
@@ -223,7 +223,7 @@ object SparkRDD_Transformations {
       */
     def RDD_sortByKey(): Unit ={
         //本地文件运行
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 2)   //设置并发度为2
+        val rdd = sc.textFile("spark/target/classes/file/word", 2)   //设置并发度为2
         //切割
         val rdd2 = rdd.flatMap(line => line.split("\t"))
         //map阶段，形成对偶
@@ -242,7 +242,7 @@ object SparkRDD_Transformations {
       * 按key连接后求笛卡儿积
       */
     def RDD_join(): Unit ={
-        val rdd = sc.textFile("SparkModule/target/classes/file/grade.tags",2)
+        val rdd = sc.textFile("spark/target/classes/file/grade.tags",2)
         // 获得姓名和科目
         val subjectRdd1 = rdd.map(line=>{
             val array = line.split(" ")
@@ -267,7 +267,7 @@ object SparkRDD_Transformations {
       * join则是每个结果都包含有Key
       */
     def RDD_coGroup(): Unit ={
-        val rdd = sc.textFile("SparkModule/target/classes/file/grade.tags",2)
+        val rdd = sc.textFile("spark/target/classes/file/grade.tags",2)
         // 获得姓名和科目
         val subjectRdd1 = rdd.map(line=>{
             val array = line.split(" ")
@@ -311,7 +311,7 @@ object SparkRDD_Transformations {
       */
     def RDD_coalesce(): Unit ={
         //获取数据并设置并行度为2
-        val rdd = sc.textFile("SparkModule/target/classes/file/word", 5)
+        val rdd = sc.textFile("spark/target/classes/file/word", 5)
         //输出分区的长度
         println(rdd.partitions.length)
         //减少分区个数,设置为2个分区，如果设置的个数大于原来的分区数，则不会减少数量保持原样

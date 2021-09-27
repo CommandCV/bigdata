@@ -95,8 +95,8 @@ public class FlowCount {
         job.setOutputValueClass(FlowBean.class);
 
         // 设置数据输入输出的路径
-        FileInputFormat.setInputPaths(job, new Path("HadoopModule/src/main/resources/file/flow_data.txt"));
-        FileOutputFormat.setOutputPath(job, new Path("HadoopModule/src/main/resources/result"));
+        FileInputFormat.setInputPaths(job, new Path("hadoop/src/main/resources/file/flow_data.txt"));
+        FileOutputFormat.setOutputPath(job, new Path("hadoop/src/main/resources/result"));
         // 提交作业等待完成
         job.waitForCompletion(true);
 

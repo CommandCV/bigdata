@@ -16,7 +16,7 @@ object SparkDataSkew {
         val sc = new SparkContext(conf)
 
         //获取数据
-        val rdd1 = sc.textFile("SparkModule/target/classes/file/word", 2)
+        val rdd1 = sc.textFile("spark/target/classes/file/word", 2)
         //切分数据
         val rdd2 = rdd1.flatMap(_.split("\t"))
         //通过map给数据添加随机数，达到分散分区的目的，避免某一分区任务量过大的情况即数据倾斜
@@ -27,7 +27,7 @@ object SparkDataSkew {
         //将每个分区的数据按键归纳聚合
         val rdd4 = rdd3.reduceByKey(_ + _, 2)   //设置分区数为2个
         //将第一次聚合的结果保存到本地，查看分区的情况
-        rdd4.saveAsTextFile("E:\\IDEAProject\\BigDataMaven\\SparkModule\\src\\main\\resources\\file\\out0")
+        rdd4.saveAsTextFile("spark/src/main/resources/file/out0")
         //通过第二次map将数据还原
         val rdd5 = rdd4.map(it =>{
             val word = it._1.split("_")(0)  //获取单词
@@ -37,6 +37,6 @@ object SparkDataSkew {
         //最后归纳聚合
         val rdd6 = rdd5.reduceByKey(_ + _, 1)
         //将最终结果保存到本地
-        rdd6.saveAsTextFile("E:\\IDEAProject\\BigDataMaven\\SparkModule\\src\\main\\resources\\file\\out1")
+        rdd6.saveAsTextFile("spark/src/main/resources/file/out1")
     }
 }

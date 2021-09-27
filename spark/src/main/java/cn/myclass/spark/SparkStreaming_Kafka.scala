@@ -20,7 +20,7 @@ object SparkStreaming_Kafka {
                 .setMaster("local[4]")
         val sparkStreamingContext = new StreamingContext(conf, Seconds(3))
         // 设置保存点
-        sparkStreamingContext.checkpoint("SparkModule/src/main/resources/checkpoint")
+        sparkStreamingContext.checkpoint("spark/src/main/resources/checkpoint")
         // 配置连接Kafka的参数
         val kafkaParams = Map[String, Object](
             // 设置Kafka服务器所在位置

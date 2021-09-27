@@ -4,8 +4,8 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer010;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.util.Collector;
 
 import java.util.Properties;
@@ -26,7 +26,7 @@ public class KafkaConnector {
      */
     private static void kafkaProduct() throws Exception {
         // 从文本文件中数据并切分打散
-        DataStream<String> data = env.readTextFile("FlinkModule/src/main/resources/stream/word")
+        DataStream<String> data = env.readTextFile("flink/src/main/resources/stream/word")
                 .flatMap(new FlatMapFunction<String, String>() {
                     @Override
                     public void flatMap(String s, Collector<String> collector) throws Exception {
@@ -37,7 +37,7 @@ public class KafkaConnector {
                     }
                 });
         // 创建 Kafka 生产者对象，配置Kafka连接信息
-        FlinkKafkaProducer010<String> myProducer = new FlinkKafkaProducer010<>(
+        FlinkKafkaProducer<String> myProducer = new FlinkKafkaProducer<>(
                 // Kafka broker list
                 "node1:9092,node2:9092,node3:9092",
                 // 主题
@@ -68,7 +68,7 @@ public class KafkaConnector {
         // 添加kafka作为数据源
         DataStream<String> stream = env
                 // 添加数据源，参数依次为 主题 序列化类型 配置
-                .addSource(new FlinkKafkaConsumer010<>("user_log", new SimpleStringSchema(), properties)
+                .addSource(new FlinkKafkaConsumer<>("user_log", new SimpleStringSchema(), properties)
                 // 设置消费类型从头消费
                 .setStartFromLatest());
         // 打印主题中的数据
