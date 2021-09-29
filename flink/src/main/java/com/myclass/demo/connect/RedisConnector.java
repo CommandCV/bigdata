@@ -1,4 +1,4 @@
-package com.myclass.demo.connector;
+package com.myclass.demo.connect;
 
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
