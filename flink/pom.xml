@@ -113,6 +113,18 @@
             <version>${jdbc.version}</version>
         </dependency>
 
+        <!--flink on yarn-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-yarn_2.11</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-hadoop-compatibility_2.11</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
     </dependencies>
 
     <!--设置编译时的属性-->

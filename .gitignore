@@ -1,3 +1,4 @@
 .idea
 *.iml
 target
+flink/src/main/resources/savepoints/*
