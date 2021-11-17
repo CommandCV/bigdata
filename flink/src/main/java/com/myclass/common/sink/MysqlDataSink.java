@@ -1,4 +1,4 @@
-package com.myclass.demo.stream;
+package com.myclass.common.sink;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;

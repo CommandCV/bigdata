@@ -1,4 +1,4 @@
-package com.myclass.demo.stream;
+package com.myclass.common.source;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;

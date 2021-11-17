@@ -2,12 +2,12 @@ package com.myclass.demo.stream;
 
 import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
-//import org.apache.flink.api.common.functions.FoldFunction;
-import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
+import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
@@ -34,7 +34,7 @@ public class DataStreamWindowFunction {
     private static class MyFlatMapFunction implements FlatMapFunction<String, Tuple2<String,Integer>>{
 
         @Override
-        public void flatMap(String s, Collector<Tuple2<String,Integer>> collector) throws Exception {
+        public void flatMap(String s, Collector<Tuple2<String,Integer>> collector) {
             for(String str:s.split(" ")){
                 collector.collect(new Tuple2<>(str,1));
             }
@@ -99,7 +99,7 @@ public class DataStreamWindowFunction {
         public void process(String key,
                             Context context,
                             Iterable<Tuple2<String, Integer>> iterable,
-                            Collector<Tuple2<String, Integer>> collector) throws Exception {
+                            Collector<Tuple2<String, Integer>> collector) {
             for(Tuple2<String, Integer> tuple:iterable){
                 collector.collect(tuple);
             }
@@ -112,16 +112,12 @@ public class DataStreamWindowFunction {
      */
     private static void reduceFunction() throws Exception {
         data.flatMap(new MyFlatMapFunction())
-                .keyBy(0)
+                .keyBy(tuple -> tuple.f0)
                 // 设置时间窗口的大小为3秒，窗口滑动间隔为1秒即每秒统计一下前三秒的单词
-                .timeWindow(Time.seconds(3),Time.seconds(1))
+                .window(SlidingEventTimeWindows.of(Time.seconds(3), Time.seconds(1)))
                 // 统计单词出现的次数
-                .reduce(new ReduceFunction<Tuple2<String, Integer>>() {
-                    @Override
-                    public Tuple2<String, Integer> reduce(Tuple2<String, Integer> tuple1, Tuple2<String, Integer> tuple2) throws Exception {
-                        return new Tuple2<>(tuple1.f0, tuple1.f1 + tuple2.f1);
-                    }
-                }).print();
+                .reduce((tuple1, tuple2) -> new Tuple2<>(tuple1.f0, tuple1.f1 + tuple2.f1))
+                .print();
         ENV.execute("Reduce Function");
     }
 
@@ -131,37 +127,15 @@ public class DataStreamWindowFunction {
      */
     private static void aggregateFunction() throws Exception {
         data.flatMap(new MyFlatMapFunction())
-                .keyBy(0)
+                .keyBy(tuple -> tuple.f0)
                 // 设置时间窗口的大小为3秒
-                .timeWindow(Time.seconds(3))
+                .window(TumblingEventTimeWindows.of(Time.seconds(3)))
                 // 使用自定义聚合方法计算单词出现的次数
                 .aggregate(new MyAggregateFunction())
                 .print();
                 
         ENV.execute("Aggregate Function");
     }
-
-//    /**
-//     * 窗口折叠方法
-//     * 统计单词出现的次数，折叠方法不适用于会话窗口以及可合并窗口，这里只是为了演示练习，已过时。 version 1.9.0  1.12已移除
-//     */
-//    private static void foldFunction() throws Exception {
-//        data.flatMap(new MyFlatMapFunction())
-//                .keyBy(0)
-//                // 设置时间窗口的大小为3秒
-//                .timeWindow(Time.seconds(3))
-//                // 窗口滚动方法，第一个参数为滚动的默认值
-//                .fold(new Tuple2<String, Integer>("", 0), new FoldFunction<Tuple2<String, Integer>, Tuple2<String, Integer>>() {
-//
-//                    @Override
-//                    public Tuple2<String, Integer> fold(Tuple2<String, Integer> tuple1, Tuple2<String, Integer> tuple2) throws Exception {
-//                        // 将键设置为第二个元组的键(因为最初的第一个键为默认值空字符串)，值相加
-//                        return new Tuple2<>(tuple2.f0, tuple1.f1 + tuple2.f1);
-//                    }
-//                }).print();
-//
-//        ENV.execute("Fold Function");
-//    }
     
     /**
      * 窗口加工方法
@@ -174,7 +148,7 @@ public class DataStreamWindowFunction {
                 // 选取键，由于下方使用的是process function，这里用的是元组，所以必须通过KeySelector指定键
                 .keyBy(t -> t.f0)
                 // 设置时间窗口的大小为3秒
-                .timeWindow(Time.seconds(3))
+                .window(TumblingEventTimeWindows.of(Time.seconds(3)))
                 // 窗口处理方法，方法第一个泛型为输入类型，第二个泛型为输出类型，第三个泛型为键的类型，
                 // 第四个为窗口类型。
                 // 注意：如果分组是使用元组索引或者字段指定的键则必须手动强制转化成正确大小的元组并提取字段
@@ -210,20 +184,15 @@ public class DataStreamWindowFunction {
      * 加工，从而实现增量聚合。
      */
     private static void incrementalWindowAggregationWithReduceFunction() throws Exception {
+        // 窗口结束时进入此方法，处理该分组归纳后的元素
         data.flatMap(new MyFlatMapFunction())
                 // 选取键，由于下方使用的是process function，这里用的是元组，所以必须通过KeySelector指定键
                 .keyBy(t -> t.f0)
                 // 设置时间窗口的大小为5秒
-                .timeWindow(Time.seconds(5))
+                .window(TumblingEventTimeWindows.of(Time.seconds(5)))
                 // 先将该窗口的元素进行归纳，计算单词出现的次数
-                .reduce(new ReduceFunction<Tuple2<String, Integer>>() {
-                    @Override
-                    public Tuple2<String, Integer> reduce(Tuple2<String, Integer> tuple1,
-                                                          Tuple2<String, Integer> tuple2) throws Exception {
-                        return new Tuple2<>(tuple1.f0, tuple1.f1 + tuple2.f1);
-                    }
-                // 窗口结束时进入此方法，处理该分组归纳后的元素
-                }, new MyProcessWindowFunction()).print();
+                .reduce((tuple1, tuple2) -> new Tuple2<>(tuple1.f0, tuple1.f1 + tuple2.f1), new MyProcessWindowFunction())
+                .print();
 
         ENV.execute("Incremental Window Aggregation with ReduceFunction");
     }
@@ -237,43 +206,18 @@ public class DataStreamWindowFunction {
                 // 选取键，由于下方使用的是process function，这里用的是元组，所以必须通过KeySelector指定键
                 .keyBy(t -> t.f0)
                 // 设置时间窗口的大小为5秒
-                .timeWindow(Time.seconds(5))
+                .window(TumblingEventTimeWindows.of(Time.seconds(5)))
                 // 先将该窗口的元素进行归纳，计算单词出现的次数
                 .aggregate(new MyAggregateFunction(), new MyProcessWindowFunction()).print();
         
         ENV.execute("Incremental Window Aggregation with AggregateFunction");
     }
 
-//    /**
-//     * 具有增量聚合的窗口折叠方法
-//     * 与增量聚合的窗口归纳方法类似，只是实现部分为折叠方法而非归纳方法，已过时 version 1.9.0  1.12已移除
-//     */
-//    private static void incrementalWindowAggregationWithFoldFunction() throws Exception {
-//        data.flatMap(new MyFlatMapFunction())
-//                // 选取键，由于下方使用的是process function，这里用的是元组，所以必须通过KeySelector指定键
-//                .keyBy(t -> t.f0)
-//                // 设置时间窗口的大小为5秒
-//                .timeWindow(Time.seconds(5))
-//                .fold(new Tuple2<>("", 0), new FoldFunction<Tuple2<String, Integer>, Tuple2<String, Integer>>() {
-//
-//                    @Override
-//                    public Tuple2<String, Integer> fold(Tuple2<String, Integer> tuple1, Tuple2<String, Integer> tuple2) throws Exception {
-//                        // 将键设置为第二个元组的键(因为最初的第一个键为默认值空字符串)，值相加
-//                        return new Tuple2<>(tuple2.f0, tuple1.f1 + tuple2.f1);
-//                    }
-//                }, new MyProcessWindowFunction()).print();
-//
-//        ENV.execute("Incremental Window Aggregation with FoldFunction");
-//    }
-
     public static void main(String[] args) throws Exception {
         reduceFunction();
         aggregateFunction();
-//        foldFunction();
         processWindowFunction();
         incrementalWindowAggregationWithReduceFunction();
         incrementalWindowAggregationWithAggregateFunction();
-//        incrementalWindowAggregationWithFoldFunction();
-
     }
 }
