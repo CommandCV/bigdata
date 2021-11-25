@@ -26,14 +26,11 @@ import org.apache.flink.streaming.api.windowing.assigners.ProcessingTimeSessionW
 import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
-import org.apache.flink.streaming.api.windowing.evictors.CountEvictor;
 import org.apache.flink.streaming.api.windowing.evictors.DeltaEvictor;
-import org.apache.flink.streaming.api.windowing.evictors.TimeEvictor;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.triggers.ContinuousEventTimeTrigger;
 import org.apache.flink.streaming.api.windowing.triggers.CountTrigger;
 import org.apache.flink.streaming.api.windowing.triggers.DeltaTrigger;
-import org.apache.flink.streaming.api.windowing.triggers.PurgingTrigger;
 import org.apache.flink.util.Collector;
 
 import java.time.Duration;
@@ -433,16 +430,16 @@ public class DataStreamWindow extends FlinkApplication {
         sEnv.setParallelism(1);
         sEnv.getConfig().setAutoWatermarkInterval(1);
 
-//        tumblingEventTimeWindow();
-//        tumblingProcessTimeWindow();
-//        slidingEventTimeWindow();
-//        countWindow();
-//        sessionWindow();
-//        join();
-//        intervalJoin();
-//        continuousEventTimeTrigger();
-//        countTrigger();
-//        deltaTrigger();
+        tumblingEventTimeWindow();
+        tumblingProcessTimeWindow();
+        slidingEventTimeWindow();
+        countWindow();
+        sessionWindow();
+        join();
+        intervalJoin();
+        continuousEventTimeTrigger();
+        countTrigger();
+        deltaTrigger();
         windowEvictor();
 
         sEnv.execute("window demo");

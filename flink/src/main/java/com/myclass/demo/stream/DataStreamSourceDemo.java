@@ -54,8 +54,6 @@ public class DataStreamSourceDemo extends FlinkApplication {
      * 从生成序列中读取数据作为数据源
      */
     public static void fromSequence() {
-        // 设置并行度，默认为CPU核心数，这里设置为1可以防止输出乱序
-        sEnv.setParallelism(1);
         // 生成1-10的序列并输出
         sEnv.fromSequence(1, 10).print();
     }
@@ -101,6 +99,9 @@ public class DataStreamSourceDemo extends FlinkApplication {
     }
 
     public static void main(String[] args) throws Exception {
+        // 设置并行度
+        sEnv.setParallelism(1);
+
         socketTextStream();
         readTextFile();
         fromSequence();

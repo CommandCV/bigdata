@@ -38,8 +38,6 @@ public class DataStreamSinkDemo extends FlinkApplication {
     public static void writeAsCsv() {
         // 从本地文本文件中读取数据
         DataStream<String> dataStream = sEnv.readTextFile("flink/src/main/resources/common/word");
-        // 设置并行度
-        sEnv.setParallelism(1);
         // 将单词转化成元组
         dataStream.flatMap((String s, Collector<Tuple1<String>> collector) -> {
             String[] words = s.split("\t");
@@ -85,6 +83,9 @@ public class DataStreamSinkDemo extends FlinkApplication {
 
 
     public static void main(String[] args) throws Exception {
+        // 设置并行度
+        sEnv.setParallelism(1);
+
         writeAsText();
         writeAsCsv();
         writeToSocket();
