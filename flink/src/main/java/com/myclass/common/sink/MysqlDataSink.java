@@ -1,6 +1,6 @@
 package com.myclass.common.sink;
 
-import org.apache.flink.api.java.tuple.Tuple2;
+import com.myclass.common.entry.Student;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 
@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
  * 自定义Mysql数据沉槽
  * @author Yang
  */
-public class MysqlDataSink extends RichSinkFunction<Tuple2<String, Integer>> {
+public class MysqlDataSink extends RichSinkFunction<Student> {
     /**
      * 预处理对象
      */
@@ -31,26 +31,25 @@ public class MysqlDataSink extends RichSinkFunction<Tuple2<String, Integer>> {
     public void open(Configuration parameters) throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
         // 创建连接
-        connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/flink",
-                "root",
-                "root");
+        connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8", "root", "root");
         // 从word表中读取所有单词
-        String sql = "insert into word(word,count) values(?,?)";
+        String sql = "insert into `student`(`name`, `gender`, `age`, `address`) values(?, ?, ?, ?)";
         // 预编译语句并获得预处理对象
         preparedStatement = connection.prepareStatement(sql);
     }
 
     /**
      * 每条结果执行的方法
-     * @param tuple2 元组数据
+     * @param student 数据
      * @param context 上下文
      */
     @Override
-    public void invoke(Tuple2<String, Integer> tuple2, Context context) throws Exception {
+    public void invoke(Student student, Context context) throws Exception {
         // 设置sql语句中的第一个和第二个值
-        preparedStatement.setString(1, tuple2.f0);
-        preparedStatement.setInt(2, tuple2.f1);
+        preparedStatement.setString(1, student.getName());
+        preparedStatement.setString(2, student.getGender());
+        preparedStatement.setInt(3, student.getAge());
+        preparedStatement.setString(4, student.getAddress());
         // 执行插入
         preparedStatement.executeUpdate();
     }

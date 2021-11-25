@@ -114,7 +114,7 @@ public class DataSetSourceAndSink {
                 JDBCInputFormat.buildJDBCInputFormat()
                         // 设置驱动、url、用户名、密码以及查询语句
                         .setDrivername("com.mysql.jdbc.Driver")
-                        .setDBUrl("jdbc:mysql://localhost:3306/flink")
+                        .setDBUrl("jdbc:mysql://localhost:3306/flink?useUnicode=true&characterEncoding=utf8")
                         .setUsername("root")
                         .setPassword("root")
                         .setQuery("select word,count from word")
@@ -186,7 +186,7 @@ public class DataSetSourceAndSink {
         // 通过JDBCOutputFormat将结果写入到数据库
         dataSource.output(JDBCOutputFormat.buildJDBCOutputFormat()
                 .setDrivername("com.mysql.jdbc.Driver")
-                .setDBUrl("jdbc:mysql://localhost:3306/flink")
+                .setDBUrl("jdbc:mysql://localhost:3306/flink?useUnicode=true&characterEncoding=utf8")
                 .setUsername("root")
                 .setPassword("root")
                 .setQuery("insert into word(word,count) values(?,?)")

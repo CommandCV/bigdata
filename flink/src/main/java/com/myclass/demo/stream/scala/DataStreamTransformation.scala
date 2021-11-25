@@ -157,15 +157,15 @@ object DataStreamTransformation {
     }
 
     /**
-      * 连接两条保留原来类型的数据流,允许两条流之间共享状态 -- 不知道有啥用
+      * 连接两条保留原来类型的数据流,允许两条流之间共享状态
       */
     def connect(): Unit ={
-        val stream1 = env.readTextFile("flink/src/main/resources/file/text")
+        val stream1 = env.readTextFile("flink/src/main/resources/common/text")
         /*val r1 = stream1.filter(_.nonEmpty).map(w => {
             val arr = w.split(" ")
             (arr(0), arr(1))
         })*/
-        val stream2 = env.readTextFile("flink/src/main/resources/file/word1")
+        val stream2 = env.readTextFile("flink/src/main/resources/common/word")
        /* val r2 = stream2.flatMap(_.split(" ")).filter(_.nonEmpty).map((_,1))*/
 
         val connectStream = stream1.connect(stream2)
@@ -178,14 +178,14 @@ object DataStreamTransformation {
       */
     def union(): Unit ={
         // 创建第一条流
-        val stream1 = env.readTextFile("flink/src/main/resources/file/text")
+        val stream1 = env.readTextFile("flink/src/main/resources/common/text")
         // 将第一条流进行处理，形成元组
         val r1 = stream1.filter(_.nonEmpty).map(w => {
             val arr = w.split(" ")
             (arr(0), arr(1).toInt)
         })
         // 创建第二条流
-        val stream2 = env.readTextFile("flink/src/main/resources/file/word1")
+        val stream2 = env.readTextFile("flink/src/main/resources/common/word")
         // 将第二条流进行处理，形成元组
         val r2 = stream2.flatMap(_.split(" ")).filter(_.nonEmpty).map((_,1))
 

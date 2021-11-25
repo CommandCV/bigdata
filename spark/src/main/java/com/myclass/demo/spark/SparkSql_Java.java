@@ -18,7 +18,7 @@ public class SparkSql_Java {
     /**
      * 数据库url
      */
-    private static final String URL = "jdbc:mysql://localhost:3306/student";
+    private static final String URL = "jdbc:mysql://localhost:3306/student?useUnicode=true&characterEncoding=utf8";
 
     /**
      * 数据表名

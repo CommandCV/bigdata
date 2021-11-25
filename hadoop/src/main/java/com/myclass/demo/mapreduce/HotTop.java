@@ -99,7 +99,7 @@ public class HotTop {
                 //驱动
                 "com.mysql.jdbc.Driver",
                 //uri
-                "jdbc:mysql://192.168.159.101:3306/text?characterEncoding=utf8",
+                "jdbc:mysql://192.168.159.101:3306/text?useUnicode=true&characterEncoding=utf8",
                 //账号
                 "root",
                 //密码

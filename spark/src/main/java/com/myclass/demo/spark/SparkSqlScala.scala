@@ -9,7 +9,7 @@ object SparkSqlScala {
     /**
       * 数据库url
       */
-    private val URL = "jdbc:mysql://localhost:3306/student"
+    private val URL = "jdbc:mysql://localhost:3306/student?useUnicode=true&characterEncoding=utf8"
 
     /**
       * 数据表名

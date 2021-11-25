@@ -1,6 +1,0 @@
-hello	world
-app	storm	storm	what
-jack	and
-how	are	you
-world	and	that
-spark	spark

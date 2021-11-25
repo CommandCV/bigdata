@@ -1,12 +1,10 @@
 package com.myclass.common.source;
 
+import com.myclass.common.entry.Student;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 
 /**
@@ -17,17 +15,12 @@ import java.sql.ResultSet;
  * 的open以及close方法更加合理的利用资源读取数据。
  * @author Yang
  */
-public class MysqlDataSource extends RichSourceFunction<String> {
+public class MysqlDataSource extends RichSourceFunction<Student> {
 
-    /**
-     * 预处理对象
-     */
-    private PreparedStatement preparedStatement = null;
-
-    /**
-     * 连接对象
-     */
     private Connection connection = null;
+    private Statement statement = null;
+    private Boolean isRunning = null;
+    private int offset = 0;
 
     /**
      * 初始化方法，读取数据前先初始化MySQL连接，避免多次初始化，有效利用资源。
@@ -38,13 +31,11 @@ public class MysqlDataSource extends RichSourceFunction<String> {
         Class.forName("com.mysql.jdbc.Driver");
         //创建连接
         connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/flink",
+                "jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8",
                 "root",
                 "root");
-        // 从word表中读取所有单词
-        String sql = "select word from word";
-        // 获得预处理对象
-        preparedStatement = connection.prepareStatement(sql);
+        statement = connection.createStatement();
+        isRunning = true;
     }
 
     /**
@@ -52,12 +43,25 @@ public class MysqlDataSource extends RichSourceFunction<String> {
      * @param sourceContext 数据源上下文对象
      */
     @Override
-    public void run(SourceContext<String> sourceContext) throws Exception {
-        // 执行查询获得结果
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()){
-            // 将结果添加到收集器中
-            sourceContext.collect(resultSet.getString("word"));
+    public void run(SourceContext<Student> sourceContext) throws Exception {
+        while (isRunning) {
+            ResultSet count = statement.executeQuery("select count(*) as `size` from `student`");
+            count.next();
+            long size = count.getLong("size");
+            if (offset < size) {
+                // 执行查询获得结果
+                ResultSet student = statement.executeQuery(String.format("select `id`, `name`, `gender`, `age`, `address` from `student` limit %s, 1", offset++));
+                while (student.next()){
+                    // 将结果添加到收集器中
+                    long id = student.getLong("id");
+                    String name = student.getString("name");
+                    String gender = student.getString("gender");
+                    int age = student.getInt("age");
+                    String address = student.getString("address");
+                    sourceContext.collect(new Student(id, name, gender, age, address));
+                }
+                Thread.sleep(1_000);
+            }
         }
     }
 
@@ -66,6 +70,7 @@ public class MysqlDataSource extends RichSourceFunction<String> {
      */
     @Override
     public void cancel() {
+        isRunning = false;
     }
 
     /**
@@ -73,8 +78,8 @@ public class MysqlDataSource extends RichSourceFunction<String> {
      */
     @Override
     public void close() throws Exception {
-        if (preparedStatement != null){
-            preparedStatement.close();
+        if (statement != null){
+            statement.close();
         }
         if (connection != null){
             connection.close();
