@@ -3,7 +3,10 @@ package com.myclass.demo.stream;
 import com.myclass.FlinkApplication;
 import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.common.state.*;
+import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
@@ -152,6 +155,36 @@ public class DataStreamWindowFunction extends FlinkApplication {
                 // 注意：如果分组是使用元组索引或者字段指定的键则必须手动强制转化成正确大小的元组并提取字段
                 // 即通过键选择器指定使用的键，这样才能够判断出返回值类型
                 .process(new ProcessWindowFunction<Tuple2<String, Integer>, Tuple2<String, Integer>, String, TimeWindow>() {
+
+                    private transient ValueState<Long> valueState;
+                    private transient ListState<Tuple2<String, Long>> listState;
+                    private transient MapState<String, Long> mapState;
+
+                    @Override
+                    public void open(Configuration parameters) throws Exception {
+                        super.open(parameters);
+                        // 注册状态
+                        ValueStateDescriptor<Long> valueStateDescriptor =
+                                new ValueStateDescriptor<>("valueState", Types.LONG);
+                        ListStateDescriptor<Tuple2<String, Long>> listStateDescriptor =
+                                new ListStateDescriptor<>("listState", Types.TUPLE(Types.STRING, Types.LONG));
+                        MapStateDescriptor<String, Long> mapStateDescriptor =
+                                new MapStateDescriptor<>("mapState", Types.STRING, Types.LONG);
+
+                        this.valueState = getRuntimeContext().getState(valueStateDescriptor);
+                        this.listState = getRuntimeContext().getListState(listStateDescriptor);
+                        this.mapState = getRuntimeContext().getMapState(mapStateDescriptor);
+                    }
+
+
+                    @Override
+                    public void close() throws Exception {
+                        super.close();
+                        this.valueState.clear();
+                        this.listState.clear();
+                        this.mapState.clear();
+                    }
+
                     /**
                      * 数据加工方法
                      * @param key 该组的key(keyBy指定的key)
@@ -163,7 +196,7 @@ public class DataStreamWindowFunction extends FlinkApplication {
                     public void process(String key, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) {
                         Integer count = 0;
                         // 遍历整个元素集合
-                        for (Tuple2<String, Integer> t : iterable) {
+                        for (Tuple2<String, Integer> ignored : iterable) {
                             count++;
                         }
                         // 窗口对象，包含此窗口的开始时间以及结束时间
