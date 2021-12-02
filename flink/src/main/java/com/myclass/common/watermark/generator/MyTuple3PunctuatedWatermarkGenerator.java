@@ -16,7 +16,7 @@ public class MyTuple3PunctuatedWatermarkGenerator implements WatermarkGenerator<
     private long currentMaxTimestamp = Long.MIN_VALUE;
 
     /**
-     * 每有一条数据调用此方法时就将当前最大的时间戳当作水印发送
+     * 每有一条数据调用此方法时就将当前最大的时间戳当作水印发送, eventTimestamp是我们withTimestampAssigner方法提取出的时间戳
      */
     @Override
     public void onEvent(Tuple3<String, Long, Integer> event, long eventTimestamp, WatermarkOutput output) {

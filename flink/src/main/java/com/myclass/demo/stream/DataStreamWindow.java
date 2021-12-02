@@ -80,9 +80,10 @@ public class DataStreamWindow extends FlinkApplication {
         stream.flatMap(new MyWordSplitWithTimestampFlatMapFunction())
                 .assignTimestampsAndWatermarks(
                         // 创建自定义周期水印生成器
-//                        WatermarkStrategy.forGenerator((ctx) -> new MyTuple3PeriodicWatermarkGenerator())
+                        // WatermarkStrategy.forGenerator((ctx) -> new MyTuple3PeriodicWatermarkGenerator())
                         // 创建自定义不断生成水印生成器
                         WatermarkStrategy.forGenerator((ctx) -> new MyTuple3PunctuatedWatermarkGenerator())
+                                .withTimestampAssigner(new MyTuple3TimestampAssigner())
                 );
     }
 

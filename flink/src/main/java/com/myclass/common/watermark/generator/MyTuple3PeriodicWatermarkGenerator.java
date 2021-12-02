@@ -17,7 +17,7 @@ public class MyTuple3PeriodicWatermarkGenerator implements WatermarkGenerator<Tu
     private long currentMaxTimestamp = Long.MIN_VALUE;
 
     /**
-     * 周期生成水印时在event事件中不需要发送水印
+     * 周期生成水印时在event事件中不需要发送水印, eventTimestamp是我们withTimestampAssigner方法提取出的时间戳
      */
     @Override
     public void onEvent(Tuple3<String, Long, Integer> event, long eventTimestamp, WatermarkOutput output) {
