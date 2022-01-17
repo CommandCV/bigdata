@@ -2,6 +2,7 @@ package com.myclass.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.JobID;
+import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.client.deployment.ClusterDeploymentException;
 import org.apache.flink.client.deployment.ClusterRetrieveException;
@@ -31,7 +32,7 @@ public class YarnUtils {
     private static final String YARN_HOST_NAME = "127.0.0.1";
     private static final String HDFS_CONFIG_DIR = "/Users/sunsongyang/hadoop/etc/hadoop";
     private static final String FLINK_LIB_DIR = "/Users/sunsongyang/flink/lib";
-    private static final String FLINK_DIST_JAR = "/Users/sunsongyang/flink/lib/flink-dist_2.11-1.12.2.jar";
+    private static final String FLINK_DIST_JAR = "/Users/sunsongyang/flink/lib/flink-dist_2.11-1.13.5.jar";
     private static final String FLINK_CONFIG_DIR = "/Users/sunsongyang/flink/conf";
     private static final String FLINK_LOG4J_FILE = "/Users/sunsongyang/flink/conf/log4j.properties";
     private static final Boolean ENABLE_SAVEPOINT = true;
@@ -93,15 +94,40 @@ public class YarnUtils {
     }
 
     public static String cancelJobWithSavepoint(String appId, String jobId) throws ClusterRetrieveException, ExecutionException, InterruptedException {
-        return createYarnClusterClient(appId).cancelWithSavepoint(JobID.fromHexString(jobId), SAVEPOINT_PATH).get();
+        if (checkJobNeedCancel(appId, jobId)) {
+            return createYarnClusterClient(appId).cancelWithSavepoint(JobID.fromHexString(jobId), SAVEPOINT_PATH).get();
+        } else {
+            return "";
+        }
     }
 
-    public static void cancelJob(String appId, String jobId) throws ClusterRetrieveException, ExecutionException, InterruptedException {
-        createYarnClusterClient(appId).cancel(JobID.fromHexString(jobId)).get();
+    public static String cancelJob(String appId, String jobId) throws ClusterRetrieveException, ExecutionException, InterruptedException {
+        if (checkJobNeedCancel(appId, jobId)) {
+            return createYarnClusterClient(appId).cancel(JobID.fromHexString(jobId)).get().toString();
+        } else {
+            return "";
+        }
     }
 
-    public static String getJobStatus(String appId, String jobId) throws ClusterRetrieveException, ExecutionException, InterruptedException {
-        return createYarnClusterClient(appId).getJobStatus(JobID.fromHexString(jobId)).get().toString();
+    public static JobStatus getJobStatus(String appId, String jobId) throws ClusterRetrieveException, ExecutionException, InterruptedException {
+        JobStatus jobStatus;
+        try {
+            jobStatus = createYarnClusterClient(appId).getJobStatus(JobID.fromHexString(jobId)).get();
+        } catch (Exception e) {
+            System.out.println("can't get job status from yarn, change job status to canceled.");
+            jobStatus = JobStatus.CANCELED;
+        }
+        return jobStatus;
+    }
+
+    public static boolean checkJobNeedCancel(String appId, String jobId) throws InterruptedException, ExecutionException, ClusterRetrieveException {
+        JobStatus jobStatus = getJobStatus(appId, jobId);
+        if (jobStatus.isGloballyTerminalState()) {
+            System.out.println("job status is: " + jobStatus.toString() + ", don't need cancel, skip.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private static ClusterClient<ApplicationId> createYarnClusterClient(String appId) throws ClusterRetrieveException {
@@ -125,22 +151,26 @@ public class YarnUtils {
         Tuple2<String, String> result = deployWithPreJob(jarFile, fullClassName);
         System.out.println("submit job (pre job mode) succeed! application id: " + result.f0 + ", job id: " + result.f1);
         System.out.println("--------------------------------------------------------------------");
-        String jobStatus = getJobStatus(result.f0, result.f1);
+        String jobStatus = getJobStatus(result.f0, result.f1).toString();
         System.out.println("application id: " + result.f0 + ", status: " + jobStatus);
         System.out.println("--------------------------------------------------------------------");
         Thread.sleep(10 * 1000);
         if (ENABLE_SAVEPOINT) {
             String savepoint = cancelJobWithSavepoint(result.f0, result.f1);
-            System.out.println("cancel with savepoint succeed! savepoint file path: " + savepoint);
+            if (StringUtils.isNotBlank(savepoint)) {
+                System.out.println("cancel with savepoint succeed! savepoint file path: " + savepoint);
+            }
         } else {
-            cancelJob(result.f0, result.f1);
-            System.out.println("cancel succeed!");
+            String ack = cancelJob(result.f0, result.f1);
+            if (StringUtils.isNotBlank(ack)) {
+                System.out.println("cancel succeed!");
+            }
         }
     }
 
     public static void main(String[] args) throws ClusterDeploymentException, ProgramInvocationException, InterruptedException, ExecutionException, ClusterRetrieveException {
         String jarFile = "/Users/sunsongyang/IdeaProjects/bigdata/flink/target/flink-1.0-SNAPSHOT.jar";
-        String fullClassName = "com.myclass.demo.stream.WordCount";
+        String fullClassName = "com.myclass.demo.stream.DataStreamWordCount";
         test(jarFile, fullClassName);
     }
 
