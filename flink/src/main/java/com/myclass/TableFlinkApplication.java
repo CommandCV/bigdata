@@ -62,6 +62,12 @@ public class TableFlinkApplication extends FlinkApplication {
         return advanceTable;
     }
 
+    protected static AdvanceTable sqlQuery(String sql, Class<?> clazz) {
+        advanceTable.setTable(tEnv.sqlQuery(sql));
+        advanceTable.setClazz(clazz);
+        return advanceTable;
+    }
+
     /**
      * 打印表中的数据
      * @param table 需要打印的表
@@ -80,12 +86,13 @@ public class TableFlinkApplication extends FlinkApplication {
     @AllArgsConstructor
     protected static class AdvanceTable {
         private Table table;
+        private Class<?> clazz = Row.class;
 
         /**
          * 打印表中的数据
          */
         public void print() {
-            tEnv.toAppendStream(table, Row.class).print();
+            tEnv.toAppendStream(table, clazz).print();
         }
 
     }
