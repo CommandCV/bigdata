@@ -60,7 +60,7 @@ public class MySocketTableSource extends RichSourceFunction<RowData> {
                     try {
                         rowData.setField(0, DateUtils.getTimestampFromDateStr(fields[0], "yyyy-MM-dd HH:mm:ss"));
                         if (format.equals("csv")) {
-                            String[] valueFields = fields[1].split("\\|");
+                            String[] valueFields = fields[1].split(",");
                             TableUtils.setRowData(rowData, 1, valueFields, columnTypes);
                         } else if (format.equals("json")){
                             TableUtils.setRowData(rowData, 1, JsonUtils.readJson(fields[1]), columnNames, columnTypes);

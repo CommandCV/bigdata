@@ -2,12 +2,14 @@ package com.myclass.connector.socket.source;
 
 import com.myclass.common.config.SocketConfigOption;
 import org.apache.flink.configuration.ConfigOption;
+import org.apache.flink.table.catalog.Column;
 import org.apache.flink.table.connector.source.DynamicTableSource;
 import org.apache.flink.table.factories.DynamicTableSourceFactory;
 import org.apache.flink.table.factories.FactoryUtil;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SocketDynamicSourceFactory implements DynamicTableSourceFactory {
 
@@ -15,7 +17,10 @@ public class SocketDynamicSourceFactory implements DynamicTableSourceFactory {
     public DynamicTableSource createDynamicTableSource(Context context) {
         final FactoryUtil.TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
         helper.validate();
-        return new SocketDynamicSource(helper.getOptions(), context.getCatalogTable().getSchema().getTableColumns());
+        return new SocketDynamicSource(helper.getOptions(),
+                context.getCatalogTable().getResolvedSchema().getColumns().stream()
+                        .filter(Column::isPhysical)
+                        .collect(Collectors.toList()));
     }
 
     @Override
