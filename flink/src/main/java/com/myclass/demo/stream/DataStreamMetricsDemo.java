@@ -9,7 +9,10 @@ import com.myclass.common.metric.meter.MyMeter;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.dropwizard.metrics.DropwizardMeterWrapper;
 import org.apache.flink.metrics.Counter;
+import org.apache.flink.metrics.Meter;
+import org.apache.flink.metrics.MeterView;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 
 public class DataStreamMetricsDemo extends FlinkApplication {
@@ -130,6 +133,60 @@ public class DataStreamMetricsDemo extends FlinkApplication {
         }).print();
     }
 
+    public static void mapMeter2() {
+        DataStreamSource<String> stream = sEnv.socketTextStream("127.0.0.1", 7777);
+        stream.map(new RichMapFunction<String, Student>() {
+            private transient Meter meter;
+
+            @Override
+            public void open(Configuration parameters) throws Exception {
+                super.open(parameters);
+                this.meter = getRuntimeContext().getMetricGroup().meter("myMapMeter", new DropwizardMeterWrapper(new com.codahale.metrics.Meter()));
+                System.out.println("RichMap function open...");
+            }
+
+            @Override
+            public void close() throws Exception {
+                super.close();
+                System.out.println("RichMap function close...");
+            }
+
+            @Override
+            public Student map(String value) {
+                this.meter.markEvent();
+                String[] data = value.split(",");
+                return new Student(null, data[0].trim(), data[1].trim(), Integer.valueOf(data[2].trim()), data[3].trim());
+            }
+        }).print();
+    }
+
+    public static void mapMeter3() {
+        DataStreamSource<String> stream = sEnv.socketTextStream("127.0.0.1", 7777);
+        stream.map(new RichMapFunction<String, Student>() {
+            private transient Meter meter;
+
+            @Override
+            public void open(Configuration parameters) throws Exception {
+                super.open(parameters);
+                this.meter = getRuntimeContext().getMetricGroup().meter("myMapMeter", new MeterView(60));
+                System.out.println("RichMap function open...");
+            }
+
+            @Override
+            public void close() throws Exception {
+                super.close();
+                System.out.println("RichMap function close...");
+            }
+
+            @Override
+            public Student map(String value) {
+                this.meter.markEvent();
+                String[] data = value.split(",");
+                return new Student(null, data[0].trim(), data[1].trim(), Integer.valueOf(data[2].trim()), data[3].trim());
+            }
+        }).print();
+    }
+
     /**
      * 直方图指标-统计map数据量
      * nc -lk 7777
@@ -175,6 +232,8 @@ public class DataStreamMetricsDemo extends FlinkApplication {
         mapCounter();
         mapGauge();
         mapMeter();
+        mapMeter2();
+        mapMeter3();
         mapHistogram();
 
         sEnv.execute("metrics demo");

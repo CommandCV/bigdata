@@ -141,6 +141,19 @@
             <version>${flink.version}</version>
         </dependency>
 
+        <!--flink metrics-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-metrics-dropwizard</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <!--flink cep-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-cep_2.11</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
     </dependencies>
 
     <!--设置编译时的属性-->
