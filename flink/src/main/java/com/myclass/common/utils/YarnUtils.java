@@ -34,7 +34,7 @@ public class YarnUtils {
     private static final String FLINK_LIB_DIR = "/Users/sunsongyang/flink/lib";
     private static final String FLINK_DIST_JAR = "/Users/sunsongyang/flink/lib/flink-dist_2.11-1.13.5.jar";
     private static final String FLINK_CONFIG_DIR = "/Users/sunsongyang/flink/conf";
-    private static final String FLINK_LOG4J_FILE = "/Users/sunsongyang/flink/conf/log4j.properties";
+    private static final String FLINK_LOGBACK_FILE = "/Users/sunsongyang/flink/conf/logback.xml";
     private static final Boolean ENABLE_SAVEPOINT = true;
     private static final String SAVEPOINT_PATH = "/Users/sunsongyang/IdeaProjects/bigdata/flink/src/main/resources/savepoints";
     private static final String SAVEPOINT_FILE = "";
@@ -49,7 +49,7 @@ public class YarnUtils {
         Configuration flinkConfiguration = GlobalConfiguration.loadConfiguration(FLINK_CONFIG_DIR);
         flinkConfiguration.set(DeploymentOptions.TARGET, YarnDeploymentTarget.PER_JOB.getName());
         flinkConfiguration.set(DeploymentOptionsInternal.CONF_DIR, FLINK_CONFIG_DIR);
-        flinkConfiguration.set(YarnConfigOptionsInternal.APPLICATION_LOG_CONFIG_FILE, FLINK_LOG4J_FILE);
+        flinkConfiguration.set(YarnConfigOptionsInternal.APPLICATION_LOG_CONFIG_FILE, FLINK_LOGBACK_FILE);
         flinkConfiguration.set(DeploymentOptions.ATTACHED, java.lang.Boolean.TRUE);
         // 提交时指定savepoint
         if (StringUtils.isNotBlank(SAVEPOINT_FILE)) {

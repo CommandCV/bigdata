@@ -16,6 +16,7 @@
         <module>hadoop</module>
         <module>storm</module>
         <module>flink</module>
+        <module>akka</module>
     </modules>
 
     <properties>
@@ -46,9 +47,30 @@
         <hive-jdbc.version>1.1.0-cdh5.16.2</hive-jdbc.version>
 
         <junit.version>4.13.1</junit.version>
-        <log4j.version>1.2.17</log4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <logback.version>1.2.3</logback.version>
         <encoding>UTF-8</encoding>
     </properties>
 
+
+    <dependencies>
+        <!-- logback -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
