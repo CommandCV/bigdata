@@ -21,16 +21,41 @@ class ActorClientTest{
   }
 
   @Test
+  def setIfNotExistsTest(): Unit = {
+    setTest()
+    val future: Future[Any] = client.setIfNotExists("name", "tom")
+    val result = Await.result(future, Duration.create(10, TimeUnit.SECONDS))
+    Assert.assertEquals(Status.Success, result)
+    getTest()
+  }
+
+  @Test
   def getTest(): Unit = {
     setTest()
     val future: Future[Any] = client.get("name")
     val result: Any = Await.result(future, Duration.create(10, TimeUnit.SECONDS))
-    Assert.assertEquals("jack", result.asInstanceOf[Some[String]].get)
+    Assert.assertEquals("jack", result.asInstanceOf[String])
   }
 
   @Test(expected = classOf[KeyNotFoundException])
   def getTestWithException(): Unit = {
     val future: Future[Any] = client.get("key")
+    val result = Await.result(future, Duration.create(10, TimeUnit.SECONDS))
+    Assert.assertEquals(Status.Failure, result)
+  }
+
+  @Test
+  def deleteTest(): Unit = {
+    setTest()
+    val future: Future[Any] = client.delete("name")
+    val result = Await.result(future, Duration.create(10, TimeUnit.SECONDS))
+    Assert.assertEquals(Status.Success, result)
+  }
+
+  @Test(expected = classOf[KeyNotFoundException])
+  def deleteTestWithException(): Unit = {
+    setTest()
+    val future: Future[Any] = client.delete("key")
     val result = Await.result(future, Duration.create(10, TimeUnit.SECONDS))
     Assert.assertEquals(Status.Failure, result)
   }
