@@ -2,7 +2,7 @@ package com.myclass.common.utils;
 
 import com.myclass.common.entity.ListNode;
 
-public class ListUtils {
+public class ListNodeUtils {
 
     public static ListNode newListNode(int... values) {
         ListNode head = new ListNode(-1, null);

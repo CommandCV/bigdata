@@ -1,7 +1,7 @@
 package com.myclass.algorithm;
 
 import com.myclass.common.entity.TreeNode;
-import com.myclass.common.utils.TreeUtils;
+import com.myclass.common.utils.TreeNodeUtils;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -74,12 +74,12 @@ public class Solution100 {
     }
 
     public static void main(String[] args) {
-        System.out.println(isSameTree(TreeUtils.newTreeNode(1, 2, 3), TreeUtils.newTreeNode(1, 2, 3)));
-        System.out.println(isSameTree(TreeUtils.newTreeNode(1, 2), TreeUtils.newTreeNode(1, null, 2)));
-        System.out.println(isSameTree(TreeUtils.newTreeNode(1, 2, 1), TreeUtils.newTreeNode(1, 1, 2)));
-        System.out.println(isSameTree(TreeUtils.newTreeNode(), TreeUtils.newTreeNode(1, 1, 2)));
-        System.out.println(isSameTree(TreeUtils.newTreeNode(), TreeUtils.newTreeNode()));
-        System.out.println(isSameTree(TreeUtils.newTreeNode(1, null, 2), TreeUtils.newTreeNode(1, 2)));
-        System.out.println(isSameTree(TreeUtils.newTreeNode(1, null, 2), TreeUtils.newTreeNode(1, null, 2)));
+        System.out.println(isSameTree(TreeNodeUtils.newTreeNode(1, 2, 3), TreeNodeUtils.newTreeNode(1, 2, 3)));
+        System.out.println(isSameTree(TreeNodeUtils.newTreeNode(1, 2), TreeNodeUtils.newTreeNode(1, null, 2)));
+        System.out.println(isSameTree(TreeNodeUtils.newTreeNode(1, 2, 1), TreeNodeUtils.newTreeNode(1, 1, 2)));
+        System.out.println(isSameTree(TreeNodeUtils.newTreeNode(), TreeNodeUtils.newTreeNode(1, 1, 2)));
+        System.out.println(isSameTree(TreeNodeUtils.newTreeNode(), TreeNodeUtils.newTreeNode()));
+        System.out.println(isSameTree(TreeNodeUtils.newTreeNode(1, null, 2), TreeNodeUtils.newTreeNode(1, 2)));
+        System.out.println(isSameTree(TreeNodeUtils.newTreeNode(1, null, 2), TreeNodeUtils.newTreeNode(1, null, 2)));
     }
 }

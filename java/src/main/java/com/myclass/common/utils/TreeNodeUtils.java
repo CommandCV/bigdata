@@ -2,7 +2,10 @@ package com.myclass.common.utils;
 
 import com.myclass.common.entity.TreeNode;
 
-public class TreeUtils {
+import java.util.LinkedList;
+import java.util.List;
+
+public class TreeNodeUtils {
 
     public static TreeNode newTreeNode(Integer... values) {
         TreeNode root = null;
@@ -77,6 +80,35 @@ public class TreeUtils {
             postorderPrint(root.right);
         }
         System.out.println(root.val);
+    }
+
+
+    public static void printWithBFS(TreeNode root) {
+        printWithBFS(root, true);
+    }
+
+    public static void printWithBFS(TreeNode root, boolean printNullValue) {
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        if (root != null) {
+            queue.offer(root);
+        }
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                System.out.print(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                if (!queue.isEmpty() || i != size - 1) {
+                    System.out.print(",");
+                }
+            }
+        }
+        System.out.println();
     }
 
 }

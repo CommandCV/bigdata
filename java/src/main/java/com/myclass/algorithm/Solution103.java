@@ -1,7 +1,7 @@
 package com.myclass.algorithm;
 
 import com.myclass.common.entity.TreeNode;
-import com.myclass.common.utils.TreeUtils;
+import com.myclass.common.utils.TreeNodeUtils;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -79,10 +79,10 @@ public class Solution103 {
     }
 
     public static void main(String[] args) {
-        System.out.println(zigzagLevelOrder(TreeUtils.newTreeNode(3, 9, 20, null, null, 15, 7)));
-        System.out.println(zigzagLevelOrder(TreeUtils.newTreeNode(3, 9, 20, 3, 2, 15, 7)));
-        System.out.println(zigzagLevelOrder(TreeUtils.newTreeNode(3, 9, 20, 3, null, 5, 7)));
-        System.out.println(zigzagLevelOrder(TreeUtils.newTreeNode(1)));
-        System.out.println(zigzagLevelOrder(TreeUtils.newTreeNode()));
+        System.out.println(zigzagLevelOrder(TreeNodeUtils.newTreeNode(3, 9, 20, null, null, 15, 7)));
+        System.out.println(zigzagLevelOrder(TreeNodeUtils.newTreeNode(3, 9, 20, 3, 2, 15, 7)));
+        System.out.println(zigzagLevelOrder(TreeNodeUtils.newTreeNode(3, 9, 20, 3, null, 5, 7)));
+        System.out.println(zigzagLevelOrder(TreeNodeUtils.newTreeNode(1)));
+        System.out.println(zigzagLevelOrder(TreeNodeUtils.newTreeNode()));
     }
 }
