@@ -4,4 +4,4 @@ target
 flink/src/main/resources/savepoints/*
 *.log
 logs
-tool/docker/*/lib/*
+tool/docker/*/lib
