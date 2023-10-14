@@ -12,12 +12,12 @@ public class TableFlinkApplication extends FlinkApplication {
     /**
      * 流式表执行环境
      */
-    protected static StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv, settings);;
+    protected static StreamTableEnvironment tEnv = StreamTableEnvironment.create(sEnv, settings);
 
     /**
      * table的增强实现
      */
-    private static AdvanceTable advanceTable = new AdvanceTable();
+    private static final AdvanceTable advanceTable = new AdvanceTable();
 
     /**
      * 执行程序
@@ -40,6 +40,8 @@ public class TableFlinkApplication extends FlinkApplication {
      * @param sql 执行的sql
      */
     protected static void executeSql(String sql) {
+        System.out.println("--------execute sql--------");
+        System.out.println(sql);
         tEnv.executeSql(sql);
     }
 

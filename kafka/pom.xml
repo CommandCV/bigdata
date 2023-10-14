@@ -15,7 +15,7 @@
         <!--添加kafka依赖-->
         <dependency>
             <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.11</artifactId>
+            <artifactId>kafka_${scala.main.version}</artifactId>
             <version>1.0.2</version>
         </dependency>
         <dependency>

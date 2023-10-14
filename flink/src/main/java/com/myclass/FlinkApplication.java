@@ -23,7 +23,7 @@ public abstract class FlinkApplication {
 
     static {
         settings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
-        sEnv = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(conf);
+        sEnv = StreamExecutionEnvironment.getExecutionEnvironment(conf);
     }
 
 }

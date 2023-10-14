@@ -1,0 +1,114 @@
+version: "3.9"
+
+networks:
+  demo:
+    name: demo
+    driver: bridge
+    ipam:
+      config:
+        - gateway: 192.168.0.1
+          subnet: 192.168.0.0/16
+
+services:
+  mysql:
+    image: 707509803/mysql:5.7.38
+    restart: always
+    networks:
+      demo:
+    hostname: mysql
+    container_name: mysql
+    user: root
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  zookeeper:
+    image: zookeeper:3.6.3
+    restart: always
+    networks:
+      demo:
+    hostname: zookeeper
+    container_name: zookeeper
+    user: root
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: bitnami/kafka:2.8.1
+    restart: always
+    networks:
+      demo:
+    hostname: kafka
+    container_name: kafka
+    user: root
+    ports:
+      - "9092:9092"
+    depends_on:
+      - "zookeeper"
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  hadoop:
+    image: 707509803/hadoop:3.1.4
+    restart: always
+    networks:
+      demo:
+    hostname: hadoop
+    container_name: hadoop
+    user: root
+    ports:
+      - "9820:9820"
+      - "8020:8020"
+      - "9000:9000"
+      - "9870:9870"
+      - "9864:9864"
+      - "50070:50070"
+      - "8088:8088"
+      - "19888:19888"
+      - "8030:8030"
+      - "8031:8031"
+      - "8032:8032"
+
+  hive:
+    image: 707509803/hive:3.1.2
+    restart: always
+    networks:
+      demo:
+    hostname: hive
+    container_name: hive
+    user: root
+    ports:
+      - "10000:10000"
+      - "10002:10002"
+      - "9083:9083"
+    depends_on:
+      - "mysql"
+      - "hadoop"
+
+  trino:
+    image: 707509803/trino:3.7.3
+    restart: always
+    networks:
+      demo:
+    hostname: trino
+    container_name: trino
+    user: root
+    ports:
+      - "8087:8087"
+    depends_on:
+      - "hive"
+
+  flink:
+    image: 707509803/flink:1.13.6
+    restart: always
+    networks:
+      demo:
+    hostname: flink
+    container_name: flink
+    user: root
+    ports:
+      - "8081:8081"
+    depends_on:
+      - "trino"

@@ -51,36 +51,42 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-clients_2.11</artifactId>
+            <artifactId>flink-clients_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--flink streaming-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-java_2.11</artifactId>
+            <artifactId>flink-streaming-java_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-scala_2.11</artifactId>
+            <artifactId>flink-streaming-scala_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
         <!--flink table-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-api-java-bridge_2.11</artifactId>
+            <artifactId>flink-table-api-java-bridge_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner-blink_2.11</artifactId>
+            <artifactId>flink-table-planner_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-api-scala-bridge_2.11</artifactId>
+            <artifactId>flink-table-planner-blink_${scala.main.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-scala-bridge_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <!--custom format or connector-->
@@ -89,11 +95,21 @@
             <artifactId>flink-table-common</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-csv</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-json</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
 
         <!--flink runtime-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-runtime-web_2.11</artifactId>
+            <artifactId>flink-runtime-web_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
@@ -105,17 +121,17 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-jdbc_2.11</artifactId>
+            <artifactId>flink-connector-jdbc_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-kafka_2.11</artifactId>
+            <artifactId>flink-connector-kafka_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-filesystem_2.11</artifactId>
+            <artifactId>flink-connector-filesystem_${scala.main.version}</artifactId>
             <version>${flink.hdfs.version}</version>
         </dependency>
         <dependency>
@@ -132,12 +148,12 @@
         <!--flink on yarn-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-yarn_2.11</artifactId>
+            <artifactId>flink-yarn_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-hadoop-compatibility_2.11</artifactId>
+            <artifactId>flink-hadoop-compatibility_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
@@ -150,10 +166,16 @@
         <!--flink cep-->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-cep_2.11</artifactId>
+            <artifactId>flink-cep_${scala.main.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
 
+        <!--flink-hudi-->
+        <dependency>
+            <groupId>org.apache.hudi</groupId>
+            <artifactId>hudi-flink1.13-bundle</artifactId>
+            <version>${hudi.version}</version>
+        </dependency>
     </dependencies>
 
     <!--设置编译时的属性-->
@@ -165,7 +187,7 @@
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>3.1.6</version>
                 <configuration>
-                    <scalaCompatVersion>2.11</scalaCompatVersion>
+                    <scalaCompatVersion>${scala.main.version}</scalaCompatVersion>
                     <scalaVersion>${scala.version}</scalaVersion>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -175,6 +197,70 @@
                             <goal>compile</goal>
                             <goal>testCompile</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--将部分依赖一块打入jar包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.kafka</groupId>
+                                    <artifactId>kafka-clients</artifactId>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.flink</groupId>
+                                    <artifactId>flink-clients_${scala.main.version}</artifactId>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.flink</groupId>
+                                    <artifactId>flink-table-common</artifactId>
+                                    <version>${flink.version}</version>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.flink</groupId>
+                                    <artifactId>flink-table-api-java</artifactId>
+                                    <version>${flink.version}</version>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.flink</groupId>
+                                    <artifactId>flink-table-api-java-bridge_${scala.main.version}</artifactId>
+                                    <version>${flink.version}</version>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.flink</groupId>
+                                    <artifactId>flink-streaming-scala_${scala.main.version}</artifactId>
+                                    <version>${flink.version}</version>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.flink</groupId>
+                                    <artifactId>flink-table-planner-blink_${scala.main.version}</artifactId>
+                                    <version>${flink.version}</version>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.flink</groupId>
+                                    <artifactId>flink-connector-kafka_${scala.main.version}</artifactId>
+                                    <outputDirectory>${basedir}/target/classes</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
