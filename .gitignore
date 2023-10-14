@@ -1,7 +1,18 @@
 .idea
 *.iml
+
+# compile files
 target
-flink/src/main/resources/savepoints/*
+
+# logs
 *.log
 logs
+
+# mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# local file
 tool/docker/*/lib
+flink/src/main/resources/savepoints/*
