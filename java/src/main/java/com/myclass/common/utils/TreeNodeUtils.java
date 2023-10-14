@@ -17,7 +17,7 @@ public class TreeNodeUtils {
     }
 
     private static void buildTreeNode(TreeNode root, int index, Integer...values) {
-        if (index < (values.length - 1) / 2) {
+        if (index <= (values.length - 1) / 2) {
             if (index * 2 + 1 < values.length && values[index * 2 + 1] != null) {
                 root.left = new TreeNode(values[index * 2 + 1], null, null);
                 buildTreeNode(root.left, index * 2 + 1, values);
