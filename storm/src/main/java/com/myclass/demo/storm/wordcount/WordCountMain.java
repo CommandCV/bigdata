@@ -8,7 +8,7 @@ import org.apache.storm.topology.TopologyBuilder;
  * @author Yang
  */
 public class WordCountMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // 设置任务信息
         TopologyBuilder topologyBuilder = new TopologyBuilder();
         // 数据源头，从文件中读取数据。                          设置executors为3即进程数为3，分配的任务数为3

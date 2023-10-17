@@ -10,7 +10,7 @@ import org.apache.storm.topology.TopologyBuilder;
  * @author Yang
  */
 public class StormHBaseMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // 创建拓扑
         TopologyBuilder builder = new TopologyBuilder();
 
