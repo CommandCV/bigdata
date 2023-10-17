@@ -16,3 +16,4 @@ logs
 # local file
 tool/docker/*/lib
 flink/src/main/resources/savepoints/*
+flink/src/main/resources/result

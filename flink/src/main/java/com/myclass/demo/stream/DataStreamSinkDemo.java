@@ -86,11 +86,11 @@ public class DataStreamSinkDemo extends FlinkApplication {
         // 设置并行度
         sEnv.setParallelism(1);
 
-        writeAsText();
+//        writeAsText();
         writeAsCsv();
-        writeToSocket();
-        addSinkWithMysql();
-        addSinkWithKafka();
+//        writeToSocket();
+//        addSinkWithMysql();
+//        addSinkWithKafka();
 
         // 执行任务
         sEnv.execute();
