@@ -1,7 +1,5 @@
-package com.myproject.antlr;
+package com.myproject.demo;
 
-import com.myproject.antlr.Hello.HelloLexer;
-import com.myproject.antlr.Hello.HelloParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
