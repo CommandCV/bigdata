@@ -12,8 +12,8 @@
     <artifactId>antlr</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <antlr4.version>4.13.0</antlr4.version>
         <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     </properties>
