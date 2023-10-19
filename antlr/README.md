@@ -1,7 +1,8 @@
-# antlr
+antlr
 ======
 
 ### Generate the antlr sources ##
 ```
-mvn generated-sources
+cd antlr
+mvn generate-sources
 ```
