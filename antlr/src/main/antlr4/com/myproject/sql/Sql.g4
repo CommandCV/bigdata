@@ -41,7 +41,7 @@ selectColumn
     : ASTERISK                          # selectAll
     | columnName (COMMA columnName)*    # selectCol
     ;
-filter: WHERE columnName op = (EQUAL_THAN | LESS_THAN | GREATE_THAN) value;
+filter: WHERE columnName op = (EQUAL_THAN | LESS_THAN | GREATER_THAN) value;
 order: ORDER BY columnName sorting;
 sorting: ASC | DESC;
 value
@@ -78,7 +78,7 @@ SINGLE_QUOTE: '\'';
 
 EQUAL_THAN: '=';
 LESS_THAN: '<';
-GREATE_THAN: '>';
+GREATER_THAN: '>';
 
 DIGIT: [0-9]+;
 WD: ([a-zA-Z_] | DIGIT)+;
