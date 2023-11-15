@@ -51,7 +51,7 @@ public class TableSchema {
     }
 
     public void dropColumn(String columnName) {
-        if (columnNameMapping.containsKey(columnName)) {
+        if (!columnNameMapping.containsKey(columnName)) {
             throw new IllegalArgumentException("column name not exist");
         }
         ColumnSchema columnSchema = columnNameMapping.get(columnName);

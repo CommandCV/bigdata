@@ -18,7 +18,7 @@ public class SqlTest {
         String insert = "insert into default.test values (1, 'aaa', 18), (2, 'bbb', 21)";
         String query1 = "select * from default.test";
         String query2 = "select * from default.test where id = 1";
-        String query3 = "select * from default.test where id > 0 order by id desc";
+        String query3 = "select id, name, age from default.test where id > 0 order by name desc";
         databaseServer.execute(createDatabase);
         databaseServer.execute(createTable);
         databaseServer.execute(alterTable);
@@ -29,6 +29,14 @@ public class SqlTest {
         System.out.println(result2);
         List<List<Object>> result3 = databaseServer.executeQuery(query3);
         System.out.println(result3);
+        String alterTable2 = "alter table default.test drop column age";
+        databaseServer.execute(alterTable2);
+        List<List<Object>> result4 = databaseServer.executeQuery(query1);
+        System.out.println(result4);
+        String delete = "delete from default.test";
+        databaseServer.execute(delete);
+        List<List<Object>> result5 = databaseServer.executeQuery(query1);
+        System.out.println(result5);
 
         String dropTable = "drop table default.test";
         databaseServer.execute(dropTable);

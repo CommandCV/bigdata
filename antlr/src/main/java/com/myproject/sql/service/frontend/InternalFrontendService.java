@@ -131,15 +131,17 @@ public class InternalFrontendService implements FrontendService {
             case DELETE -> {
                 DeleteStatementSqlContext context = (DeleteStatementSqlContext) sqlContext;
                 List<ParameterBinding> filter = context.getFilter();
-                List<String> columnNames = filter.stream().map(ParameterBinding::getName).toList();
-                catalogService.validateColumnName(database, table, columnNames);
-                // build filter parameter
-                TableSchema tableSchema = catalogService.getTableSchema(database, table);
-                filter.forEach(parameter -> {
-                    ColumnSchema columnSchema = tableSchema.getColumn(parameter.getName());
-                    parameter.setType(columnSchema.getColumnType());
-                    parameter.setColumnIndex(tableSchema.getColumnIndex(parameter.getName()));
-                });
+                if (filter != null) {
+                    List<String> columnNames = filter.stream().map(ParameterBinding::getName).toList();
+                    catalogService.validateColumnName(database, table, columnNames);
+                    // build filter parameter
+                    TableSchema tableSchema = catalogService.getTableSchema(database, table);
+                    filter.forEach(parameter -> {
+                        ColumnSchema columnSchema = tableSchema.getColumn(parameter.getName());
+                        parameter.setType(columnSchema.getColumnType());
+                        parameter.setColumnIndex(tableSchema.getColumnIndex(parameter.getName()));
+                    });
+                }
                 storageService.delete(database, table, filter);
             }
         }
