@@ -11,6 +11,14 @@
 
     <artifactId>scala</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+    </dependencies>
+
     <!--设置编译时的属性-->
     <build>
         <plugins>
