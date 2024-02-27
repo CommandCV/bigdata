@@ -25,11 +25,10 @@
         <java.version>17</java.version>
         <scala.main.version>2.12</scala.main.version>
         <scala.version>2.12.16</scala.version>
-<!--        <scala.main.version>2.11</scala.main.version>-->
-<!--        <scala.version>2.11.12</scala.version>-->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <scala-compiler-plugin.version>4.6.1</scala-compiler-plugin.version>
 
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <jackson.version>2.13.5</jackson.version>
         <compress.version>1.21</compress.version>
         <caffeine.version>2.9.0</caffeine.version>
@@ -112,8 +111,22 @@
                         <arg>java.base/java.lang=ALL-UNNAMED</arg>
                         <arg>--add-opens</arg>
                         <arg>java.base/java.util=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>java.base/sun.nio.ch=ALL-UNNAMED</arg>
+                        <arg>--add-opens</arg>
+                        <arg>java.base/java.nio=ALL-UNNAMED</arg>
+                        <arg>--add-opens</arg>
+                        <arg>java.base/java.lang.invoke=ALL-UNNAMED</arg>
                     </compilerArgs>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
