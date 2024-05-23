@@ -10,17 +10,17 @@ object WordCount_Scala {
         //创建spark配置对象
         val conf = new SparkConf()
         //设置应用程序名，集群模式需要注释掉
-        //conf.setAppName("WordCount-spark")
+        conf.setAppName("WordCount-spark")
         //设置master属性，在此为本地模式，集群模式需要注释掉
-        //conf.setMaster("local")
+        conf.setMaster("local[*]")
         //通过conf创建sc
         val sc = new SparkContext(conf)
     
         //加载文本文件
         //jar包运行
-        val rdd1 = sc.textFile(args(0))
+//        val rdd1 = sc.textFile(args(0))
         //本地文件运行
-        //val rdd1 = sc.textFile("spark/target/classes/file/word")
+        val rdd1 = sc.textFile("spark/src/main/resources/file/word")
         //切割
         val rdd2 = rdd1.flatMap(line => line.split("\t"))
         //形成对偶
